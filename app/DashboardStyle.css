@@ -1,0 +1,14 @@
+.dashboardContainer {
+    display: flex;
+  }
+  
+  .mainContent {
+    flex-grow: 1;
+    padding: 20px;
+  }
+  
+  .cards {
+    display: flex;
+    gap: 20px;
+  }
+  

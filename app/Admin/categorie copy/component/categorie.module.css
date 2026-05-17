@@ -1,0 +1,43 @@
+.categorieList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+  .product-list {
+    display:inline-flex;
+    justify-content: space-around;
+  }
+  
+/* Cible les boutons de navigation avec précision */
+
+.custom-swiper-container :global(.swiper-button-prev),
+.custom-swiper-container :global(.swiper-button-next) {
+  color: black;
+  top: 40%;
+  width: 40px;
+  height: 40px;
+  z-index: 10;
+}
+
+.custom-swiper-container :global(.swiper-button-prev) {
+  left: -60px; /* Écarte à gauche */
+}
+
+.custom-swiper-container :global(.swiper-button-next) {
+  right: -60px; /* Écarte à droite */
+}
+
+  
+  .categorieItem {
+    width: 200px;
+    padding: 1rem;
+    background-color: #fff;
+    
+    text-align: center;
+  }
+  
+  
+  

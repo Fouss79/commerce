@@ -1,39 +1,49 @@
-'use client';
-import { useEffect, useState } from 'react';
-import axios from 'axios';
+"use client";
 
-function ProduitsDeLaMarque() {
+import { useEffect, useState } from "react";
+import axios from "axios";
+import ProductItem from "../../produit/component/ProductItems";
+
+function CollectionParMarque() {
   const [produits, setProduits] = useState([]);
   const [erreur, setErreur] = useState(null);
-  const marqueId=1;
+
+  const marqueId = 10;
+  const API_URL =
+    process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
+
   useEffect(() => {
     axios
-      .get(`http://localhost:8080/api/produits/marque/${marqueId}`)
+      .get(`${API_URL}/api/produitss/marque/id/${marqueId}`)
       .then((res) => {
         setProduits(res.data);
       })
       .catch((err) => {
-        console.error('Erreur lors du chargement des produits :', err);
+        console.error(
+          "Erreur lors du chargement des produits :",
+          err
+        );
         setErreur("Impossible de charger les produits.");
       });
-  }, [marqueId]);
+  }, [marqueId, API_URL]);
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
-      {erreur && <p className="text-red-500 col-span-full">{erreur}</p>}
-      {Array.isArray(produits) && produits.map((produit) => (
-  <div key={produit.id} className="border p-2 rounded shadow">
-    <img
-      src={`http://localhost:8080/${produit.image}`}
-      alt={produit.nom}
-      className="h-32 w-full object-cover"
-    />
-    <h3 className="font-semibold">{produit.nom}</h3>
-  </div>
-))}
+    <div className="mt-4">
+      {erreur && (
+        <p className="text-red-500 mb-4">{erreur}</p>
+      )}
 
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        {Array.isArray(produits) &&
+          produits.map((produit) => (
+            <ProductItem
+              key={produit.id}
+              product={produit}
+            />
+          ))}
+      </div>
     </div>
   );
 }
 
-export default ProduitsDeLaMarque;
+export default CollectionParMarque;

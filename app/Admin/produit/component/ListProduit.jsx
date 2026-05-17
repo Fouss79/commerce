@@ -70,9 +70,21 @@ const ListProduit = ({ refreshKey }) => {
                 />
               )}
 
-              <Link href={`/Admin/produit/modifierproduit/${produit.id}`} style={{ backgroundColor: '#15878f' }} className="bg-blue-500 text-white px-3 py-1 rounded">
-                Modifier
-              </Link>
+              <div className="flex gap-2 mt-2">
+  <Link
+    href={`/Admin/produit/modifierproduit/${produit.id}`}
+    className="bg-blue-500 text-white px-3 py-1 rounded"
+  >
+    Modifier
+  </Link>
+
+  <Link
+    href={`/Admin/produit/${produit.id}/images`}
+    className="bg-green-600 text-white px-3 py-1 rounded"
+  >
+    Images / Couleurs
+  </Link>
+</div>
             </li>
           ))}
         </ul>

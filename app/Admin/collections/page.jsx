@@ -1,7 +1,7 @@
 
 import CollectionList from "./Component/CollectionList";
 import CreerCollectionParMarque from "./Component/CreerCollectionForm";
-import ProduitsDeLaMarque from "./Component/ProduitsDeLaMarque";
+import CollectionParMarque from "./Component/CollectionParMarque";
 
 
 export default function HomePage() {
@@ -10,6 +10,7 @@ export default function HomePage() {
      <div className="flex justify-center"><h1 className="text-[#15878f]  font-bold mb-4">COLLECTION PAR MARQUE</h1></div>
       <CreerCollectionParMarque/>
       <CollectionList/>
+      <CollectionParMarque/>
       
 
     </main>

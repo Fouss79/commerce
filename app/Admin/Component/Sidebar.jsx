@@ -31,7 +31,7 @@ const Sidebar = () => {
     },
     {
       nom: 'Commande',
-      link: '/Admin/commande',
+      link: '/Admin/commandes',
       icon: <FaShoppingCart />
     },
     {

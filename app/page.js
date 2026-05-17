@@ -1,35 +1,81 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react";
-import Header from "./Admin/Component/Header";
+
 import ListProduits from "./Admin/produit/component/ListProduits";
 import Link from 'next/link';
 import './App.css';
 import './Produits.css';
 import Scrollpane from "./Component/Scrollpane";
+import MegaMenu from "./Component/MegaMenu";
+
+import AvisUtilisateurs from "./Component/AvisUtilisateurs"
 import { useCart } from "./context/CartContext";
 import ListCategorie from "./Admin/categorie/component/ListCategorie";
 import Carousel from "./Component/Carousel";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import CollectionList from "./Admin/collections/Component/CollectionList";
+import CategorieMenu from "./Component/CategorieMenu";
+import { motion } from "framer-motion";
 
 
-export default function Home() {
+
+
+
+
+
+  export default function Home() {
         
   const {Ajoute, addToCart, cartItems, isModalOpen, removeFromCart, openModal, closeModal } = useCart();
 
 
-
-
-
-
   
-  
+const sliderRef = useRef(null);
+const [currentIndex, setCurrentIndex] = useState(0);
 
+const images = ["/chaussure.webp", "/imagess.jpg", "/trigo.jpeg"];
 
-  const sliderRef = useRef(null); // Référence pour le slider
-  const [currentIndex, setCurrentIndex] = useState(0);
+// 🔁 Auto slide
+useEffect(() => {
+  const interval = setInterval(() => {
+    setCurrentIndex((prev) => (prev + 1) % images.length);
+  }, 4000);
+
+  return () => clearInterval(interval);
+}, []);
+const categorieList = [
+        {
+            nom: 'Vetements',
+            Link: '/',
+        },
+        {
+            nom: 'Chaussure',
+            Link: '/Chaussure',
+        },
+        {
+            nom: 'Telephone',
+            Link: '/Telephone',
+        },
+    ];
+
+// 🔁 Mise à jour du slider
+useEffect(() => {
+  if (sliderRef.current) {
+    const slideWidth = sliderRef.current.children[0].offsetWidth;
+    sliderRef.current.style.transform = `translateX(-${currentIndex * slideWidth}px)`;
+  }
+}, [currentIndex]);
+
+// 👉 Boutons
+const nextSlide = () => {
+  setCurrentIndex((prev) => (prev + 1) % images.length);
+};
+
+const prevSlide = () => {
+  setCurrentIndex((prev) => (prev - 1 + images.length) % images.length);
+};
+
 
   const updateSlider = () => {
     if (sliderRef.current) {
@@ -39,28 +85,6 @@ export default function Home() {
     }
   };
   
-
-
-  
-  const nextSlide = () => {
-    if (sliderRef.current) {
-      const totalSlides = sliderRef.current.children.length;
-      setCurrentIndex((prevIndex) => (prevIndex + 1) % totalSlides);
-      
-      updateSlider();
-      
-    }
-  };
-  ; // Ajouter refreshKey pour re-fetch
-
-
-
-  const prevSlide = () => {
-    if (sliderRef.current) {
-      const totalSlides = sliderRef.current.children.length;
-      setCurrentIndex((prevIndex) => (prevIndex - 1 + totalSlides) % totalSlides);
-      updateSlider();
-    }};
      
     useEffect(() => {
       const handleClickOutside = (event) => {
@@ -82,19 +106,187 @@ export default function Home() {
         }, []);
       
   return (
-    <main className="">
-      
-      <Header cartItems={cartItems}/>
-       
-      
-      <div className="pt-20 overflow-y-auto flex-1 bg-blue-100">
-      <Carousel/>
-      <div className="mt-6">
-      
+    <main className="w-full overflow-x-hidden bg-white"> 
+        <Carousel/>
+      <div className="mt-4"><MegaMenu/></div>
+     
+     
+<ListProduits/>     
+     
+        <div className="pt-20 overflow-y-auto flex-1 bg-white">
+             <section className="w-full max-w-7xl mx-auto  overflow-hidden shadow-2xl  relative group">
+
+  {/* IMAGE BACKGROUND */}
+  <div className="relative h-[400px] md:h-[500px] overflow-hidden">
+   <img
+  src="/nike.jpg"
+  alt="Collection hiver"
+  className="w-[95%] h-[95%] object-contain mx-auto transition-transform duration-700 group-hover:scale-110"
+/>
+
+    {/* OVERLAY DARK */}
+    <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-transparent"></div>
+
+    {/* CONTENU TEXTE */}
+    <div className="absolute inset-0 flex flex-col justify-center px-6 md:px-16 text-white">
+
+      <h2 className="text-3xl md:text-6xl font-extrabold mb-4 animate-fadeIn">
+        COLLECTION NIKE 2026
+      </h2>
+
+      <p className="text-lg md:text-xl max-w-xl mb-6 text-gray-200 animate-fadeIn delay-200">
+        Style, confort et performance. Découvrez nos nouveaux survêtements
+        conçus pour vous démarquer.
+      </p>
+
+      <div className="flex gap-4 flex-wrap animate-fadeIn delay-300">
+        <button className="
+          px-6 py-3 rounded-xl
+          bg-white text-black font-semibold
+          hover:bg-gray-200 transition duration-300
+        ">
+          Acheter maintenant
+        </button>
+
+        <button className="
+          px-6 py-3 rounded-xl
+          border border-white/50
+          hover:bg-white/10 transition duration-300
+        ">
+          Voir plus
+        </button>
       </div>
-      <div className="bg-blue-100">
-      <ListCategorie/>
-      <ListProduits AjtePagne={addToCart} />
+
+    </div>
+   
+   
+  </div>
+
+  {/* SECTION PRODUITS EN BAS */}
+ 
+
+</section>
+
+<section className="w-full max-w-6xl mx-auto 
+ 
+shadow-xl flex flex-col md:flex-row items-center overflow-hidden">
+
+  {/* IMAGE GAUCHE */}
+  <div className="w-full md:w-1/3 h-[300px] md:h-[400px] overflow-hidden">
+    <img
+      src="/survetement.png"
+      alt="Survêtement"
+      className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
+    />
+  </div>
+
+  {/* TEXTE */}
+  <div className="w-full md:w-1/3  px-6 md:px-10 py-8 text-center md:text-left flex flex-col justify-center">
+    
+    <h2 className="text-2xl md:text-4xl font-extrabold text-gray-800 leading-snug mb-4">
+      Nouveaux survêtements
+    </h2>
+
+    <p className="text-gray-600 mb-6">
+      Découvrez notre collection hiver avec des designs modernes,
+      confortables et élégants.
+    </p>
+
+    <button className="
+      px-6 py-3 rounded-xl
+      bg-gradient-to-r from-gray-700 to-white
+      text-white font-semibold
+      shadow-lg
+      hover:scale-105 transition duration-300
+    ">
+      Découvrir la collection
+    </button>
+
+  </div>
+
+  {/* IMAGE DROITE */}
+  <div className="w-full md:w-1/3 h-[300px] md:h-[400px] overflow-hidden">
+    <img
+      src="/survet.png"
+      alt="Survêtement 2"
+      className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
+    />
+  </div>
+
+</section>
+
+
+
+  <section className="flex flex-col md:flex-row items-center bg-pink-50">
+
+  {/* TEXTE */}
+  <div className="w-full md:w-1/2 h-auto md:h-[600px] p-8 md:p-16 flex flex-col justify-center">
+    
+    <h2 className="text-3xl md:text-5xl font-bold mb-6 leading-tight text-gray-800">
+      Découvrez une nouvelle façon d’acheter et vendre
+    </h2>
+
+    <p className="text-gray-600 text-lg mb-6">
+      Avec <span className="font-semibold text-pink-600">Maboutique</span>, accédez à des milliers de produits,
+      comparez les prix et profitez d’une expérience simple, rapide et sécurisée.
+    </p>
+
+    <ul className="space-y-3 mb-8 text-gray-600">
+      <li>✅ Produits de qualité vérifiés</li>
+      <li>🚀 Livraison rapide</li>
+      <li>💳 Paiement sécurisé</li>
+      <li>📦 Vendez vos produits facilement</li>
+    </ul>
+
+    <div className="flex gap-4 flex-wrap">
+      <a href="/home/produit">
+        <button className="
+          px-6 py-3 rounded-xl
+          bg-pink-600 hover:bg-pink-700
+          text-white font-semibold
+          transition-all duration-300
+          hover:scale-105 shadow-lg
+        ">
+          Voir les produits
+        </button>
+      </a>
+
+      <a href="/dashboard">
+        <button className="
+          px-6 py-3 rounded-xl
+          border border-pink-300
+          text-pink-600
+          hover:bg-pink-100
+          transition-all duration-300
+        ">
+          Vendre maintenant
+        </button>
+      </a>
+    </div>
+
+  </div>
+
+  {/* IMAGE */}
+  <div
+    className="w-full md:w-1/2 h-[300px] md:h-[600px] bg-cover bg-center relative"
+    style={{ backgroundImage: "url('/cosme1.png')" }}
+  >
+    {/* Overlay stylé rose */}
+    <div className="absolute inset-0 bg-gradient-to-l from-pink-500/40 to-transparent"></div>
+  </div>
+
+</section>
+
+
+   
+<AvisUtilisateurs/>
+
+  
+ 
+     
+      <div className="bg-white]">
+      
+    
       
       <Scrollpane
   cartItems={cartItems}
@@ -105,259 +297,15 @@ export default function Home() {
   Ajoute={Ajoute}
 />
 </div>
-<CollectionList/>
-    <div className="w-full h-96  mx-auto bg-[white] shadow-lg rounded-lg flex items-center ">
-        <div className="w-96
-         h-full bg-[white]">
-             <img
-      src="/survetement.webp" 
-      alt="Image" 
-      className="  object-cover  transition-transform duration-300 hover:scale-105" width={500} height={200}
-    />
-         </div>
-         <div className="w-96 h-full  text-black font-bold mb-4 flex items-center text-4xl">
-           <h2 className="mt-2 px-14">DE NOUVEAUX SURVETEMENTS DISPONIBLES POUR L'HIVER</h2>
-           
-         </div>
-         <div className="w-96 h-full bg-[white">
-         <img
-      src="/survet.jpg" 
-      alt="Image" 
-      className=" object-cover  transition-transform duration-300 hover:scale-105 ml-20" width={500} height={100}
-    />
-         </div>
-      </div>
+    
       
-      <div className="w-full h-96  gap-8 mx-auto bg-[red] shadow-lg rounded-lg flex justify-between items-center  ">
-        
-      <div className=" relative h-20 bg-[red] px-20 items-center font-bold text-white">
-        <h2 className="text-4xl ">NOS MEILLEURES OFFRES </h2>
-        <h2 className="mt-2 text-4xl">Ces promos pouraient vous interesser</h2>
-        </div>
-         <div className="  w-80 h-full bg-[white]">
-         <img
-      src="/vvvv.webp" 
-      alt="Image" 
-      className="    transition-transform duration-300 hover:scale-105" width={800} height={600}
-    />
-         </div>
-      </div>
-      <div className="w-full h-96 mt-6 gap-8 mx-auto bg-[black] shadow-lg rounded-lg flex justify-between items-center  ">
-        
-      <div className=" relative h-20 bg-[black] px-20 items-center font-bold text-white">
-        <h2 className="text-4xl ">NOS MEILLEURES OFFRES </h2>
-        <h2 className="mt-2 text-4xl">Ces promos pouraient vous interesser</h2>
-        </div>
-        <div className="w-full h-96  mx-auto bg-white shadow-lg rounded-lg flex justify-center items-center relative overflow-hidden">
-        {/* Slider container */}
-        <div
-          ref={sliderRef}
-          className="flex transition-transform duration-700 ease-in-out w-[300%]"
-        >
-          <img
-            src="/chaussure.webp"
-            alt="Chaussure"
-            className="w-full flex-shrink-0 object-cover"
-          />
-          <img
-            src="/imagess.jpg"
-            alt="Image 2"
-            className="w-full  flex-shrink-0 object-cover" width={20} height={10}
-          />
-          <img
-            src="/trigo.jpeg"
-            alt="Image 3"
-            className="w-full flex-shrink-0 object-cover"
-          />
-        </div>
-
-        {/* Boutons de navigation */}
-        <button
-          onClick={prevSlide}
-          className="absolute left-5 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white px-4 py-2 rounded-full shadow-md"
-        >
-          Prev
-        </button>
-        <button
-          onClick={nextSlide}
-          className="absolute right-5 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white px-4 py-2 rounded-full shadow-md"
-        >
-          Next
-        </button>
-      </div>
-
-      </div>
+     
+     
     
-      <div>
-      {/* breadcrumb */}
-      <div className="container py-4 flex items-center gap-3">
-        <Link href="/" className="text-primary text-base">
-          <i className="fa-solid fa-house"></i>
-        </Link>
-        <span className="text-sm text-gray-400">
-          <i className="fa-solid fa-chevron-right"></i>
-        </span>
-        <p className="text-gray-600 font-medium">Product</p>
-      </div>
-      {/* ./breadcrumb */}
-
-      {/* product-detail */}
-      <div className="container grid grid-cols-2 gap-6">
-        <div>
-          <img
-            src="/assets/images/products/product1.jpg"
-            alt="product"
-            width={500} // Spécifiez les dimensions des images
-            height={500}
-            className="w-full"
-          />
-          <div className="grid grid-cols-5 gap-4 mt-4">
-            <img
-              src="/assets/images/products/product2.jpg"
-              alt="product2"
-              width={100}
-              height={100}
-              className="w-full cursor-pointer border border-primary"
-            />
-            <img
-              src="/assets/images/products/product3.jpg"
-              alt="product3"
-              width={100}
-              height={100}
-              className="w-full cursor-pointer border"
-            />
-            <img
-              src="/assets/images/products/product4.jpg"
-              alt="product4"
-              width={100}
-              height={100}
-              className="w-full cursor-pointer border"
-            />
-            <img
-              src="/assets/images/products/product5.jpg"
-              alt="product5"
-              width={100}
-              height={100}
-              className="w-full cursor-pointer border"
-            />
-            <img
-              src="/assets/images/products/product6.jpg"
-              alt="product6"
-              width={100}
-              height={100}
-              className="w-full cursor-pointer border"
-            />
-          </div>
-        </div>
-
-        <div>
-          <h2 className="text-3xl font-medium uppercase mb-2">Italian L Shape Sofa</h2>
-          <div className="flex items-center mb-4">
-            <div className="flex gap-1 text-sm text-yellow-400">
-              <span><i className="fa-solid fa-star"></i></span>
-              <span><i className="fa-solid fa-star"></i></span>
-              <span><i className="fa-solid fa-star"></i></span>
-              <span><i className="fa-solid fa-star"></i></span>
-              <span><i className="fa-solid fa-star"></i></span>
-            </div>
-            <div className="text-xs text-gray-500 ml-3">(150 Reviews)</div>
-          </div>
-          <div className="space-y-2">
-            <p className="text-gray-800 font-semibold space-x-2">
-              <span>Availability: </span>
-              <span className="text-green-600">In Stock</span>
-            </p>
-            <p className="space-x-2">
-              <span className="text-gray-800 font-semibold">Brand: </span>
-              <span className="text-gray-600">Apex</span>
-            </p>
-            <p className="space-x-2">
-              <span className="text-gray-800 font-semibold">Category: </span>
-              <span className="text-gray-600">Sofa</span>
-            </p>
-            <p className="space-x-2">
-              <span className="text-gray-800 font-semibold">SKU: </span>
-              <span className="text-gray-600">BE45VGRT</span>
-            </p>
-          </div>
-          <div className="flex items-baseline mb-1 space-x-2 font-roboto mt-4">
-            <p className="text-xl text-primary font-semibold">$45.00</p>
-            <p className="text-base text-gray-400 line-through">$55.00</p>
-          </div>
-
-          <p className="mt-4 text-gray-600">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Eos eius eum reprehenderit dolore vel mollitia optio
-            consequatur hic asperiores inventore suscipit, velit consequuntur, voluptate doloremque iure necessitatibus
-            adipisci magnam porro.
-          </p>
-
-          {/* Size selector */}
-          <div className="pt-4">
-            <h3 className="text-sm text-gray-800 uppercase mb-1">Size</h3>
-            <div className="flex items-center gap-2">
-              {['XS', 'S', 'M', 'L', 'XL'].map((size) => (
-                <div key={size} className="size-selector">
-                  <input type="radio" name="size" id={`size-${size.toLowerCase()}`} className="hidden" />
-                  <label
-                    htmlFor={`size-${size.toLowerCase()}`}
-                    className="text-xs border border-gray-200 rounded-sm h-6 w-6 flex items-center justify-center cursor-pointer shadow-sm text-gray-600"
-                  >
-                    {size}
-                  </label>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Color selector */}
-          <div className="pt-4">
-            <h3 className="text-xl text-gray-800 mb-3 uppercase font-medium">Color</h3>
-            <div className="flex items-center gap-2">
-              {['#fc3d57', '#000', '#fff'].map((color) => (
-                <div key={color} className="color-selector">
-                  <input type="radio" name="color" id={color} className="hidden" />
-                  <label
-                    htmlFor={color}
-                    className="border border-gray-200 rounded-sm h-6 w-6 cursor-pointer shadow-sm block"
-                    style={{ backgroundColor: color }}
-                  ></label>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Quantity selector */}
-          <div className="mt-4">
-            <h3 className="text-sm text-gray-800 uppercase mb-1">Quantity</h3>
-            <div className="flex border border-gray-300 text-gray-600 divide-x divide-gray-300 w-max">
-              <div className="h-8 w-8 text-xl flex items-center justify-center cursor-pointer select-none">-</div>
-              <div className="h-8 w-8 text-base flex items-center justify-center">4</div>
-              <div className="h-8 w-8 text-xl flex items-center justify-center cursor-pointer select-none">+</div>
-            </div>
-          </div>
-
-          {/* Actions */}
-          <div className="mt-6 flex gap-3 border-b border-gray-200 pb-5 pt-5">
-            <Link
-              href="#"
-              className="bg-primary border border-primary text-white px-8 py-2 font-medium rounded uppercase flex items-center gap-2 hover:bg-transparent hover:text-primary transition"
-            >
-              <i className="fa-solid fa-bag-shopping"></i> Add to cart
-            </Link>
-            <Link
-              href="#"
-              className="border border-gray-300 text-gray-600 px-8 py-2 font-medium rounded uppercase flex items-center gap-2 hover:text-primary transition"
-            >
-              <i className="fa-solid fa-heart"></i> Wishlist
-            </Link>
-          </div>
-        </div>
-      </div>
-      {/* ./product-detail */}
-    </div>
+    
     
     </div>
-    <footer className="bg-gray-900 text-white text-center py-6 "> <p>© {new Date().getFullYear()} Malisugu. Tous droits réservés.</p> </footer>
-    </main>
+   
+       </main>
   );
 }

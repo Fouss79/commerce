@@ -1,102 +1,274 @@
-'user client';
-import React from 'react';
-import Link from 'next/link';
+"use client";
+
+import React, { useState } from "react";
+import Link from "next/link";
 import {
-    Home,
-    User,
-    Box,
-    Tag,
-    ShoppingCart,
-    MessageSquare,
-    LogOut
-  } from 'lucide-react';
-  
+  User,
+  ShoppingCart,
+  LogOut,
+  Search,
+} from "lucide-react";
+import { useRouter } from "next/navigation";
 
+import { useCart } from "../../context/CartContext";
+import { useAuth } from "../../context/AuthContext";
 
-const Header = ({cartItems}) => {
- 
-    const menulist =[
-{
-    nom : 'Accueil',
-    Link : '/',
-    icon:<Home size={20}/>
-},
-{
-    nom : 'Contact',
-    Link : '/contact',
-    icon:<User size={20}/>
-    
-},
-{
-    nom : "A propos",
-    Link : "/a propos",
-    icon:<Box size={20}/>
-    
-}
+const Header = () => {
+  const { cartItems } = useCart();
+  const { user, isAuthenticated, logout } = useAuth();
+  const router = useRouter();
 
-    ]
-    const getTotal = () => {
-        if (!cartItems || !Array.isArray(cartItems)) return 0;
-        return cartItems.reduce((total, item) => total + item.quantite * item.prix, 0);
-      };
-      
-      const getTotalQuantitie = () => {
-        if (!cartItems || !Array.isArray(cartItems)) return 0;
-        return cartItems.reduce((total, item) => total + item.quantite, 0);
-      };
-      
+  const [search, setSearch] = useState("");
 
+  // Déterminer la page de destination selon le rôle
+  const dashboardLink =
+    user?.role === "ADMIN" ? "/Admin" : "/User";
+
+  const total =
+    cartItems?.reduce(
+      (acc, item) => acc + item.prix * item.quantite,
+      0
+    ) || 0;
+
+  const totalItems =
+    cartItems?.reduce(
+      (acc, item) => acc + item.quantite,
+      0
+    ) || 0;
+
+  // Recherche
+  const handleSearch = (e) => {
+    e.preventDefault();
+
+    if (!search.trim()) return;
+
+    router.push(
+      `/produits?search=${encodeURIComponent(search)}`
+    );
+  };
 
   return (
-    <nav  style={{ backgroundColor: '#15878f' }} className=" border-b  shadow-md  flex justify-between items-center   fixed top-0 left-0 w-full z-30">
-    <img className="h-30 w-20" src="/WhatsApp Image 2025-05-30 at 10.11.01.jpeg" alt="" />
- 
+    <nav
+  className="
+    bg-gradient-to-r from-[#063c28] via-[#0a5a3d] to-[#0d6b49]
+    shadow-2xl backdrop-blur-md
+    fixed top-0 left-0 w-full z-50
+    border-b border-white/10
+  "
+>
+  {/* 
+    CHANGEMENTS IMPORTANTS :
+    - max-w-7xl supprimé pour utiliser toute la largeur de l'écran
+    - px-2 sur mobile et px-3 sur desktop pour rapprocher les éléments des bords
+    - ml-auto sur le bloc de droite pour pousser logout à l'extrême droite
+  */}
+  <div className="w-full px-2 md:px-3 py-2 flex items-center gap-4">
     
-
-
-<div className='flex justify-center items-center md:hidden'>
+    {/* LOGO - très proche du bord gauche */}
+    <Link href="/" className="flex items-center gap-3 shrink-0">
+      <div
+        className="
+          bg-white/10 backdrop-blur-md
+          rounded-2xl
+          border border-white/10
+          shadow-lg
+        "
+      >
+        <img
+          src="/imm1.png"
+          className="h-14 w-14 object-contain"
+          alt="logo"
+        />
       </div>
-      
- 
-    <div className="flex  gap-5 px-6 font-bold  justify-center ">
-    {menulist.map((menu) => (
-  <div key={menu.Link} className=' text-white py-2 px-6 rounded-lg hover:bg-blue-400 hover:text-white transition duration-300'>
-    <Link href={menu.Link}>
-      <button className='flex justify-between gap-2'>{menu.icon}{menu.nom}</button>
+
+      <div className="hidden md:block">
+        <span className="text-white font-bold text-2xl tracking-wide">
+          Mali
+        </span>
+        <span className="text-yellow-400 font-bold text-2xl tracking-wide">
+          Sugu
+        </span>
+
+        <p className="text-green-100 text-xs">
+          Marketplace 100% Malien
+        </p>
+      </div>
     </Link>
-  </div>
-))}
 
-    
-</div>
-
-<div className='flex items-center gap-6 pr-6'>
-  <div className='text-white font-bold'>{getTotal()} FCFA</div>
+    {/* BARRE DE RECHERCHE */}
    
-  <div className="relative">
-    <Link href={'/panier'}>
-    <ShoppingCart size={28} color='white' />
-    {getTotalQuantitie() > 0 && (
-      <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
-        {getTotalQuantitie()}
-      </span>
-    )}
-    </Link>
+    {/* RIGHT SIDE - poussé complètement à droite */}
+    <div className="flex items-center gap-4 md:gap-6 shrink-0 ml-auto">
+       <form
+      onSubmit={handleSearch}
+      className="
+        hidden lg:flex flex-1 max-w-2xl mx-6
+        items-center
+        bg-white rounded-full
+        overflow-hidden
+        shadow-lg
+      "
+    >
+      <input
+        type="text"
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        placeholder="Rechercher un produit, une marque..."
+        className="
+          flex-1 px-16 py-2
+          outline-none
+          text-gray-700
+          placeholder-gray-400
+        "
+      />
+
+      <button
+        type="submit"
+        className="
+           text-[#063c28]
+          px-4 py-2 bg-yellow-400
+          hover:bg-yellow-300
+          transition-all duration-300
+          font-semibold
+          flex items-center gap-2
+        "
+      >
+        <Search size={20} />
+       
+      </button>
+    </form>
+
+      {/* TOTAL */}
+      <div
+        className="
+          hidden md:flex items-center
+          bg-white/10 backdrop-blur-md
+          px-4 py-2 rounded-full
+          text-white font-semibold
+          border border-white/10
+        "
+      >
+        <span className="text-yellow-400 mr-2">💰</span>
+        {total.toLocaleString()} FCFA
+      </div>
+
+      {/* PANIER */}
+      <Link
+        href="/panier"
+        className="
+          relative p-3 rounded-full
+          bg-white/10 backdrop-blur-md
+          border border-white/10
+          hover:bg-white/20
+          transition-all duration-300
+          hover:scale-110
+        "
+      >
+        <ShoppingCart size={24} className="text-white" />
+
+        {totalItems > 0 && (
+          <span
+            className="
+              absolute -top-1 -right-1
+              bg-yellow-400 text-[#063c28]
+              text-xs font-bold
+              min-w-[22px] h-[22px]
+              px-1 flex items-center justify-center
+              rounded-full shadow-lg
+            "
+          >
+            {totalItems}
+          </span>
+        )}
+      </Link>
+
+      {/* AUTH */}
+      {isAuthenticated ? (
+        <div className="flex items-center gap-3">
+          {/* Dashboard */}
+          <Link
+            href={dashboardLink}
+            className="
+              hidden md:flex items-center gap-2
+              bg-white/10 backdrop-blur-md
+              px-4 py-2 rounded-full
+              text-white font-semibold
+              border border-white/10
+              hover:bg-white/20
+              transition-all duration-300
+            "
+          >
+            👤 {user?.nom}
+          </Link>
+
+          {/* LOGOUT - quasiment collé au bord droit */}
+          <button
+            onClick={logout}
+            className="
+              p-3 rounded-full
+              bg-red-500/90 text-white
+              shadow-lg
+              hover:bg-red-600
+              hover:scale-110
+              transition-all duration-300
+            "
+          >
+            <LogOut size={20} />
+          </button>
+        </div>
+      ) : (
+        <Link
+          href="/login"
+          className="
+            p-3 rounded-full
+            bg-yellow-400 text-[#063c28]
+            shadow-lg
+            hover:bg-yellow-300
+            hover:scale-110
+            transition-all duration-300
+          "
+        >
+          <User size={20} />
+        </Link>
+      )}
+    </div>
   </div>
+  <div className="lg:hidden px-4 pb-3">
+        <form
+          onSubmit={handleSearch}
+          className="
+            flex items-center
+            bg-white rounded-full
+            overflow-hidden
+            shadow-lg
+          "
+        >
+          <input
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Rechercher..."
+            className="
+              flex-1 px-4 py-3
+              outline-none
+              text-gray-700
+            "
+          />
 
-  <Link href={'/Admin'} className='flex items-center gap-2 font-bold text-white'>
-    Connexion
-    <button className="bg-blue-400 py-2 px-2 hover:bg-[green] font-bold rounded-full text-white">
-      <User size={30} color='white' />
-    </button>
-  </Link>
-</div>
-
-    
-
-
-         
-         </nav>
+          <button
+            type="submit"
+            className="
+              bg-yellow-400 text-[#063c28]
+              px-4 py-3
+              hover:bg-yellow-300
+              transition
+            "
+          >
+            <Search size={20} />
+          </button>
+        </form>
+      </div>
+</nav>
   );
 };
 

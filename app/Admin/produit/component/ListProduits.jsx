@@ -1,78 +1,182 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import ProductItem from './ProductItems';
-import styles from "./produit.module.css"; // Import du CSS module
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import {
+  ShoppingBag,
+  Sparkles,
+  AlertCircle,
+  PackageOpen,
+  CheckCircle,
+} from "lucide-react";
 
-const ListProduits = ({ refreshKey,AjtePagne }) => {
+import ProductItem from "./ProductItems";
+import styles from "./produit.module.css";
+import { useCart } from "../../../context/CartContext";
+
+const ListProduits = ({ refreshKey, AjtePagne }) => {
   const [produits, setProduits] = useState([]);
-  const [loading, setLoading] = useState(true); // État de chargement
-  const [error, setError] = useState(null); // État d'erreur
-  
-  const deleteid = (produit_id) => {
-    axios.delete(`http://localhost:8080/api/produitss/${produit_id}`)
-      .then((response) => {
-        console.log(response.data);
-        fetchProduits() // Reload produits after deletion
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [message, setMessage] = useState("");
+
+  const { addToCart } = useCart();
+
+  /* ================= AJOUT AU PANIER ================= */
+  const handleClick = (product) => {
+    addToCart(product);
+    setMessage("Produit ajouté au panier avec succès !");
+
+    setTimeout(() => {
+      setMessage("");
+    }, 3000);
   };
 
-  const fetchProduits = async () => {
-    setLoading(true); 
-    // Début du chargement
+  /* ================= SUPPRESSION ================= */
+  const deleteid = async (produit_id) => {
     try {
-      const response = await axios.get('http://localhost:8080/api/produitss');
-      setProduits(response.data);
+      await axios.delete(
+        `http://localhost:8080/api/produitss/${produit_id}`
+      );
+      fetchProduits();
     } catch (error) {
-      setError('Erreur lors de la récupération des produits'); // Mettre à jour l'état d'erreur
-      console.error('Error fetching produits:', error);
-    } finally {
-      setLoading(false); // Fin du chargement
+      console.error("Erreur suppression :", error);
     }
   };
 
+  /* ================= CHARGEMENT DES PRODUITS ================= */
+  const fetchProduits = async () => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const response = await axios.get(
+        "http://localhost:8080/api/produitss"
+      );
+      setProduits(response.data);
+    } catch (error) {
+      setError("Erreur lors de la récupération des produits.");
+      console.error("Erreur fetch produits :", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  /* ================= EFFECT ================= */
   useEffect(() => {
-   
     fetchProduits();
-  }, [refreshKey]); // Ajouter refreshKey pour re-fetch
+  }, [refreshKey]);
 
+  /* ================= RENDER ================= */
   return (
-    <div className='  rounded-xl p-5 w-full'>
-      
-      {loading ? ( // Affichage pendant le chargement
-        <p>Chargement...</p>
-      ) : error ? ( // Afficher l'erreur si elle existe
-        <p>{error}</p>
+    <div className="w-full relative">
+      {/* ================= MESSAGE SUCCESS ================= */}
+      {message && (
+        <div
+          className="
+            fixed top-24 right-6 z-50
+            bg-white border border-green-200
+            shadow-2xl rounded-2xl
+            px-5 py-4
+            flex items-center gap-3
+            animate-bounce
+          "
+        >
+          <CheckCircle className="text-green-600" size={22} />
+          <span className="text-green-700 font-medium text-sm">
+            {message}
+          </span>
+        </div>
+      )}
+
+      {/* ================= LOADING ================= */}
+      {loading ? (
+        <div className="flex flex-col items-center justify-center py-24">
+          <div className="w-14 h-14 border-4 border-green-200 border-t-[#063c28] rounded-full animate-spin"></div>
+          <p className="mt-4 text-gray-600 font-medium">
+            Chargement des produits...
+          </p>
+        </div>
+      ) : error ? (
+        /* ================= ERREUR ================= */
+        <div className="flex flex-col items-center justify-center py-20 text-center">
+          <AlertCircle size={50} className="text-red-500 mb-4" />
+          <p className="text-red-600 font-semibold">{error}</p>
+        </div>
       ) : produits.length === 0 ? (
-        <p>Aucun produit disponible</p>
+        /* ================= AUCUN PRODUIT ================= */
+        <div className="flex flex-col items-center justify-center py-20 text-center">
+          <PackageOpen size={56} className="text-gray-400 mb-4" />
+          <h3 className="text-xl font-semibold text-gray-700 mb-2">
+            Aucun produit disponible
+          </h3>
+          <p className="text-gray-500">
+            Les produits apparaîtront ici dès qu’ils seront ajoutés.
+          </p>
+        </div>
       ) : (
+        <>
+          {/* ================= HEADER SECTION ================= */}
+          <section className="mt-12 px-4">
+            <div className="flex items-center justify-between flex-wrap gap-4 mb-8">
+              <div>
+                {/* Badge */}
+                <div
+                  className="
+                    inline-flex items-center gap-2
+                    px-4 py-2 rounded-full
+                    bg-green-100 text-[#063c28]
+                    font-semibold text-sm mb-3
+                  "
+                >
+                  
+                  Sélection exclusive
+                </div>
 
-        
-        <div>
-          
-      <section className="mt-12 px-4"> <h3 className="text-2xl font-bold mb-6">
-      Produits en vedette</h3> 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6"> {produits.map(product => ( <div key={product.id} className="bg-white p-4 rounded-xl shadow"> 
-        <img
-              src={`http://localhost:8080/${product.image}`}
-              alt={product.nom}
-              className=" rounded-xl shadow-md  "
-            /> <h4 className="text-lg font-semibold">{product.nom}</h4> <p className="text-gray-600">{product.prix}</p> </div> ))} </div> </section> 
+                {/* Titre */}
+                <h3 className="text-3xl md:text-4xl font-extrabold text-[#063c28]">
+                  Articles à la une
+                </h3>
 
+                {/* Sous-titre */}
+                <p className="text-gray-600 mt-2 max-w-2xl">
+                  Découvrez nos meilleurs produits soigneusement
+                  sélectionnés pour vous offrir qualité, fiabilité et
+                  satisfaction.
+                </p>
+              </div>
 
-        <div className={`${styles.productList} `}>
-          {produits.slice(0, 8).map((product) => (
-            <ProductItem key={product.id} product={product} AjtePagne={AjtePagne} />
-          ))}
-        </div>
-        </div>
-      
-      
-          )}
+              {/* Nombre de produits */}
+              <div
+                className="
+                  hidden md:flex items-center gap-2
+                  bg-white border border-gray-200
+                  px-5 py-3 rounded-2xl shadow-sm
+                "
+              >
+                <ShoppingBag
+                  size={20}
+                  className="text-[#063c28]"
+                />
+                <span className="font-semibold text-gray-700">
+                  {produits.length} produits
+                </span>
+              </div>
+            </div>
+          </section>
+
+          {/* ================= LISTE DES PRODUITS ================= */}
+          <div className={styles.productList}>
+            {produits.map((product) => (
+              <ProductItem
+                key={product.id}
+                product={product}
+                AjtePagne={() => handleClick(product)}
+              />
+            ))}
+          </div>
+        </>
+      )}
     </div>
   );
-}
-        
+};
+
 export default ListProduits;

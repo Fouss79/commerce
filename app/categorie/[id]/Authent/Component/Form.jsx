@@ -1,148 +1,165 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import axios from "axios";
-import { useRouter } from "next/navigation";
 import { useCart } from "../../../../context/CartContext";
-// 🔹 Assure-toi que le chemin est correct
+import { X } from "lucide-react";
+import { toast } from "react-hot-toast";
 
 const Form = ({ onSubmitSuccess }) => {
-  const { isFormOpen, closeForm } = useCart() // ✅ Nous récupérons bien closeForm
+  const { isFormOpen, closeForm, cartItems, emptyCart } = useCart();
+
   const [prenom, setPrenom] = useState("");
   const [nom, setNom] = useState("");
   const [adresse, setAdresse] = useState("");
   const [numero, setNumero] = useState("");
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const router = useRouter();
+
   const { id } = useParams();
+  const router = useRouter();
   const formRef = useRef(null);
 
+  // Focus auto
   useEffect(() => {
     if (isFormOpen && formRef.current) {
       formRef.current.focus();
     }
   }, [isFormOpen]);
 
-  const saveClient = async (e) => {
-    e.preventDefault();
-    setError(null);
-
-    const clientData = { prenom, nom, adresse, numero };
-
+  // 🔥 CONFIRMATION COMMANDE
+  const confirmCommande = async (clientId) => {
     try {
-      const url = "http://localhost:8080/api/client";
-      const method = "post";
+      const commande = {
+        clientId: parseInt(clientId),
+        produits: cartItems.map((item) => ({
+          produitId: parseInt(item.id),
+          quantite: parseInt(item.quantite),
+        })),
+      };
 
-      const response = await axios({
-        method: method,
-        url: url,
-        data: clientData,
-        headers: { "Content-Type": "application/json" },
-      });
+      const response = await axios.post(
+        "http://localhost:8080/api/paniers",
+        commande
+      );
 
-      router.push(`/panier/${response.data.id}`);
+      toast.success("Commande validée avec succès 🎉");
 
-      if (onSubmitSuccess) {
-        onSubmitSuccess();
-      }
-
-      closeForm(); // ✅ Nous appelons ici closeForm pour fermer le formulaire
+      emptyCart();
+      router.push(`/panier/rapport/${response.data.panierId}`);
+      
     } catch (error) {
-      console.error("Erreur lors de l'enregistrement :", error);
-      setError("Une erreur est survenue. Veuillez réessayer.");
+      console.error(error);
+      toast.error("Erreur lors de la commande");
     }
   };
 
-    if (!isFormOpen) return null; // ✅ Si isFormOpen est false, le formulaire ne sera pas affiché.
+  // 🔥 SAVE CLIENT
+  const saveClient = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+
+    try {
+      const response = await axios.post(
+        "http://localhost:8080/api/client",
+        { prenom, nom, adresse, numero }
+      );
+
+      await confirmCommande(response.data.id);
+
+      if (onSubmitSuccess) onSubmitSuccess();
+
+      closeForm();
+    } catch (err) {
+      console.error(err);
+      setError("Une erreur est survenue");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (!isFormOpen) return null;
 
   return (
-    <div
-      ref={formRef}
-      className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center"
-    >
-      <div className="bg-white rounded-lg w-1/2 h-3/4 overflow-y-auto shadow-lg p-6">
-        <h2 className="font-semibold text-lg text-center mb-4">
-           ENREGISTREZ VOTRE ADRESSE
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex justify-center items-center">
+      
+      {/* MODAL */}
+      <div
+        ref={formRef}
+        className="bg-white rounded-2xl w-full max-w-lg p-6 shadow-2xl relative animate-fadeIn"
+      >
+        {/* CLOSE */}
+        <button
+          onClick={closeForm}
+          className="absolute top-4 right-4 text-gray-500 hover:text-black"
+        >
+          <X size={24} />
+        </button>
+
+        <h2 className="text-2xl font-bold text-center mb-6 text-gray-800">
+          📦 Adresse de livraison
         </h2>
 
-        {error && <p className="text-red-500 text-center">{error}</p>}
+        {error && (
+          <p className="text-red-500 text-center mb-4">{error}</p>
+        )}
 
         <form className="flex flex-col gap-4" onSubmit={saveClient}>
-          <div>
-            <label htmlFor="prenom" className="text-gray-500 text-sm">
-              Prénom<span className="text-red-500">*</span>
-            </label>
-            <input
-              id="prenom"
-              type="text"
-              placeholder="Entrer le prénom"
-              className="w-full px-4 py-2 rounded-lg focus:outline-none border"
-              value={prenom}
-              onChange={(e) => setPrenom(e.target.value)}
-              required
-            />
-          </div>
+          
+          <input
+            type="text"
+            placeholder="Prénom"
+            className="input"
+            value={prenom}
+            onChange={(e) => setPrenom(e.target.value)}
+            required
+          />
 
-          <div>
-            <label htmlFor="nom" className="text-gray-500 text-sm">
-              Nom<span className="text-red-500">*</span>
-            </label>
-            <input
-              id="nom"
-              type="text"
-              placeholder="Entrer le nom"
-              className="w-full px-4 py-2 rounded-lg focus:outline-none border"
-              value={nom}
-              onChange={(e) => setNom(e.target.value)}
-              required
-            />
-          </div>
+          <input
+            type="text"
+            placeholder="Nom"
+            className="input"
+            value={nom}
+            onChange={(e) => setNom(e.target.value)}
+            required
+          />
 
-          <div>
-            <label htmlFor="adresse" className="text-gray-500 text-sm">
-              Adresse<span className="text-red-500">*</span>
-            </label>
-            <input
-              id="adresse"
-              type="text"
-              placeholder="Entrer l'adresse"
-              className="w-full px-4 py-2 rounded-lg focus:outline-none border"
-              value={adresse}
-              onChange={(e) => setAdresse(e.target.value)}
-              required
-            />
-          </div>
+          <input
+            type="text"
+            placeholder="Adresse"
+            className="input"
+            value={adresse}
+            onChange={(e) => setAdresse(e.target.value)}
+            required
+          />
 
-          <div>
-            <label htmlFor="numero" className="text-gray-500 text-sm">
-              Numéro<span className="text-red-500">*</span>
-            </label>
-            <input
-              id="numero"
-              type="text"
-              placeholder="Entrer le numéro"
-              className="w-full px-4 py-2 rounded-lg focus:outline-none border"
-              value={numero}
-              onChange={(e) => setNumero(e.target.value)}
-              required
-            />
-          </div>
+          <input
+            type="text"
+            placeholder="Numéro"
+            className="input"
+            value={numero}
+            onChange={(e) => setNumero(e.target.value)}
+            required
+          />
 
-          <div className="flex justify-between">
+          {/* BUTTONS */}
+          <div className="flex gap-3 mt-4">
             <button
               type="submit"
-              className="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition"
+              disabled={loading}
+              className="flex-1 bg-pink-600 text-white py-3 rounded-xl font-semibold hover:bg-pink-700 transition"
             >
-              Enregistrer
+              {loading ? "En cours..." : "Valider"}
             </button>
 
             <button
               type="button"
-              onClick={closeForm} // ✅ Ajout du bouton pour fermer le formulaire
-              className="bg-gray-500 text-white px-6 py-2 rounded-lg hover:bg-gray-600 transition"
+              onClick={closeForm}
+              className="flex-1 bg-gray-200 text-gray-700 py-3 rounded-xl hover:bg-gray-300 transition"
             >
-              Fermer
+              Annuler
             </button>
           </div>
         </form>

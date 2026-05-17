@@ -1,172 +1,190 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import axios from 'axios';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 
 const FormulaireProduit = ({ onSubmitSuccess }) => {
-  const [selectedImage, setSelectedImage] = useState(null);
-  const [nom, setNom] = useState('');
-  const [prix, setPrix] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('');
-  const { id } = useParams();
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [categories, setCategories] = useState([]);
-  const [selectedMarque, setSelectedMarque] = useState('');
-  const [marques , setMarques] = useState([]);
+  const [nom, setNom] = useState("");
+  const [prix, setPrix] = useState("");
+  const [description, setDescription] = useState("");
+  const [image, setImage] = useState(null);
 
-  const saveProduit = (e) => {
+  const [sousCategories, setSousCategories] = useState([]);
+  const [marques, setMarques] = useState([]);
+
+  const [selectedSousCategorie, setSelectedSousCategorie] = useState("");
+  const [selectedMarque, setSelectedMarque] = useState("");
+
+  const [error, setError] = useState("");
+
+  const API_URL = process.env.NEXT_PUBLIC_API_URL;
+
+  // ================= LOAD DATA =================
+  useEffect(() => {
+    axios
+      .get(`${API_URL}/api/souscategories`)
+      .then((res) => {
+        setSousCategories(Array.isArray(res.data) ? res.data : []);
+      })
+      .catch((err) => console.log(err));
+
+    axios
+      .get(`${API_URL}/api/marque`)
+      .then((res) => {
+        setMarques(Array.isArray(res.data) ? res.data : []);
+      })
+      .catch((err) => console.log(err));
+  }, [API_URL]);
+
+  // ================= SUBMIT =================
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!nom || !prix || !selectedCategory || !selectedMarque) {
-      setError('Veuillez remplir tous les champs requis.');
+
+    if (
+      !nom ||
+      !prix ||
+      !description ||
+      !selectedSousCategorie ||
+      !selectedMarque
+    ) {
+      setError("Remplis tous les champs !");
       return;
     }
 
-    const formData = new FormData();
-    formData.append('nom', nom);
-    formData.append('prix', prix);
-    formData.append('categorieId', selectedCategory);
-    formData.append('marqueId',selectedMarque);
-    if (selectedImage) formData.append('image', selectedImage);
+    try {
+      const formData = new FormData();
 
-    const url = id 
-      ? `http://localhost:8080/api/produits/${id}` 
-      : 'http://localhost:8080/api/produits';
+      formData.append("nom", nom);
+      formData.append("prix", prix);
+      formData.append("description", description);
+      formData.append("sousCategorieId", selectedSousCategorie);
+      formData.append("marqueId", selectedMarque);
 
-    setLoading(true);
-    axios({
-      method: id ? 'put' : 'post',
-      url: url,
-      data: formData,
-      headers: {
-        'Content-Type': 'multipart/form-data'
+      if (image) {
+        formData.append("image", image);
       }
-    })
-    .then((response) => {
-      onSubmitSuccess();
-      setLoading(false);
-    }).catch(error => {
-      console.error(error);
-      setError("Une erreur s'est produite lors de l'envoi.");
-      setLoading(false);
-    });
-  };
 
-  useEffect(() => {
-    axios.get('http://localhost:8080/api/categoriee')
-      .then((response) => setCategories(response.data))
-      .catch((error) => console.error(error));
-    axios.get('http://localhost:8080/api/marque')
-    .then((response)=>setMarques(response.data))
-    .catch((error) =>console.error(error));
-    if (id) {
-      axios.get(`http://localhost:8080/api/produits/${id}`)
-        .then((response) => {
-          setNom(response.data.nom);
-          setPrix(response.data.prix);
-          setSelectedCategory(response.data.categorie.id);
-          setSelectedImage(response.data.imagePath); // Chemin vers l'image
-        }).catch(error => console.log(error));
+      await axios.post(`${API_URL}/api/produitss`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      alert("Produit ajouté !");
+
+      // RESET
+      setNom("");
+      setPrix("");
+      setDescription("");
+      setImage(null);
+      setSelectedSousCategorie("");
+      setSelectedMarque("");
+      setError("");
+
+      onSubmitSuccess && onSubmitSuccess();
+
+    } catch (err) {
+      console.log(err);
+      setError("Erreur lors de l'envoi");
     }
-  }, [id]);
-
-  const handleImageChange = (e) => {
-    setSelectedImage(e.target.files[0]);
   };
 
   return (
-    <div className='flex flex-col gap-3 bg-white rounded-xl p-5 w-full md:w-[400px]'>
-      <h1 className='font-semibold'>{id ? 'Mettre à jour' : 'Créer'} un produit</h1>
-      <form className='flex flex-col gap-3' onSubmit={saveProduit}>
-        {error && <div className="text-red-500">{error}</div>}
-        <label htmlFor='product-image' className='text-gray-500 text-sm'>Image</label>
-        {selectedImage && (
-          <div className='flex justify-center items-center'>
-            {typeof selectedImage === 'string' ? (
-              <img src={`http://localhost:8080/${selectedImage}`} alt="Selected" className='h-32' />
-            ) : (
-              <img src={URL.createObjectURL(selectedImage)} alt="Selected" className='h-32' />
-            )}
-          </div>
-        )}
+    <div className="bg-white p-6 rounded-xl w-[400px] shadow">
+      <h2 className="text-lg font-bold mb-4">
+        Créer un produit
+      </h2>
+
+      {error && (
+        <p className="text-red-500 mb-3">
+          {error}
+        </p>
+      )}
+
+      <form
+        onSubmit={handleSubmit}
+        className="flex flex-col gap-3"
+      >
+
+        {/* IMAGE */}
         <input
-          id='product-image'
-          type='file'
-          name='image'
-          className='px-4 py-2 rounded-lg focus:outline-none'
-          onChange={handleImageChange}
+          type="file"
+          onChange={(e) => setImage(e.target.files[0])}
+          className="border p-2 rounded"
         />
-        <div className='flex flex-col gap-1'>
-          <label htmlFor='product-name' className='text-gray-500 text-sm'>Nom<span className='text-red-500'>*</span></label>
-          <input
-            id='product-name'
-            type='text'
-            placeholder='Entrer le nom'
-            name='product-name'
-            className='px-4 py-2 rounded-lg focus:outline-none'
-            value={nom}
-            onChange={(e) => setNom(e.target.value)}
-            required
-          />
-        </div>
-        <div className='flex flex-col gap-1'>
-          <label htmlFor='prix' className='text-gray-500 text-sm'>Prix<span className='text-red-500'>*</span></label>
-          <input
-            id='prix'
-            type='number'
-            placeholder='Entrer le prix'
-            name='prix'
-            className='px-4 py-2 rounded-lg focus:outline-none'
-            value={prix}
-            onChange={(e) => setPrix(e.target.value)}
-            required
-          />
-        </div>
-        <div className='flex flex-col gap-1'>
-          <label htmlFor='categorie' className='text-gray-500 text-sm'>Catégorie<span className='text-red-500'>*</span></label>
-          <select
-            id='categorie'
-            name='categorie'
-            className='px-4 py-2 rounded-lg focus:outline-none'
-            value={selectedCategory}
-            onChange={(e) => setSelectedCategory(e.target.value)}
-            required
-          >
-            <option value="">Sélectionner une catégorie</option>
-            {categories.map((categoriee) => (
-              <option key={categoriee.id} value={categoriee.id}>
-                {categoriee.nom}
-              </option>
-            ))}
-          </select>
-        </div>
 
-        <div className='flex flex-col gap-1'>
-          <label htmlFor='marque' className='text-gray-500 text-sm'>Marque<span className='text-red-500'>*</span></label>
-          <select
-            id='marque'
-            name='marque'
-            className='px-4 py-2 rounded-lg focus:outline-none'
-            value={selectedMarque}
-            onChange={(e) => setSelectedMarque(e.target.value)}
-            required
-          >
-            <option value="">Sélectionner une marque</option>
-            {marques.map((marque) => (
-              <option key={marque.id} value={marque.id}>
-                {marque.nom}
-              </option>
-            ))}
-          </select>
-        </div>
+        {/* NOM */}
+        <input
+          type="text"
+          placeholder="Nom produit"
+          value={nom}
+          onChange={(e) => setNom(e.target.value)}
+          className="border p-2 rounded"
+        />
 
-        <button  style={{ backgroundColor: '#15878f' }} className='bg-blue-500 text-white px-4 py-2 rounded-lg mt-3' disabled={loading}>
-          {loading ? 'Envoi...' : (id ? "Mettre à jour" : "Ajouter")}
+        {/* DESCRIPTION */}
+        <textarea
+          placeholder="Description du produit"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          className="border p-2 rounded h-28 resize-none"
+        />
+
+        {/* PRIX */}
+        <input
+          type="number"
+          placeholder="Prix"
+          value={prix}
+          onChange={(e) => setPrix(e.target.value)}
+          className="border p-2 rounded"
+        />
+
+        {/* SOUS-CATEGORIE */}
+        <select
+          value={selectedSousCategorie}
+          onChange={(e) =>
+            setSelectedSousCategorie(e.target.value)
+          }
+          className="border p-2 rounded"
+        >
+          <option value="">
+            Choisir une sous-catégorie
+          </option>
+
+          {sousCategories.map((sc) => (
+            <option key={sc.id} value={sc.id}>
+              {sc.nom}
+            </option>
+          ))}
+        </select>
+
+        {/* MARQUE */}
+        <select
+          value={selectedMarque}
+          onChange={(e) =>
+            setSelectedMarque(e.target.value)
+          }
+          className="border p-2 rounded"
+        >
+          <option value="">
+            Choisir une marque
+          </option>
+
+          {marques.map((m) => (
+            <option key={m.id} value={m.id}>
+              {m.nom}
+            </option>
+          ))}
+        </select>
+
+        {/* BUTTON */}
+        <button className="bg-blue-600 hover:bg-blue-700 text-white p-2 rounded transition">
+          Ajouter
         </button>
+
       </form>
     </div>
   );
-}
+};
 
 export default FormulaireProduit;

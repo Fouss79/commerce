@@ -77,7 +77,7 @@ export default function ProduitDetail() {
 
             <p className="text-lg font-medium text-gray-500 mb-2">Prix : <span className="text-[#15878f] font-semibold">{produit.prix} FCFA</span></p>
           
-          <button   onClick={handleClick} className="bg-yellow-700 text-white px-6 py-2 rounded hover:bg-yellow-600 transition">
+          <button   onClick={handleClick} className="bg-blue-400 text-white px-6 py-2 rounded hover:bg-yellow-600 transition">
             Ajouter au panier
           </button>
           {message && (
@@ -87,9 +87,8 @@ export default function ProduitDetail() {
       </div>
 
       {/* Produits de la même marque */}
-      <h2 className="text-2xl font-bold mb-4 text-[#15878f]">
-        Autres produits de la même marque
-      </h2>
+<h2 className="text-3xl font-bold mb-4 text-black">
+        PRODUITS SIMILAIRES</h2>      
       <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
         {produitsMarque.map((p) => (
           <Link key={p.id} href={`/produit/${p.id}`} className="border rounded-lg p-3 shadow hover:shadow-lg transition">

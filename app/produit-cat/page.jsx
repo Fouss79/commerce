@@ -50,14 +50,14 @@ const PageProduits = () => {
         let produitsFiltres = res.data.filter((p) => {
           // Filtrer d'abord par catégorie
           const appartientCategorie =
-            p?.sousCategorie?.categorie?.id ===
+            p?.categorieId ===
             categorieIdNumber;
 
           // Si une sous-catégorie est sélectionnée,
           // filtrer également par sous-catégorie
           const appartientSousCategorie =
             !sousCategorieIdNumber ||
-            p?.sousCategorie?.id ===
+            p?.sousCategorieId ===
               sousCategorieIdNumber;
 
           return (
@@ -97,7 +97,7 @@ const PageProduits = () => {
   const produitsFiltres = produits.filter((p) => {
     return (
       (!selectedMarque ||
-        p?.marque?.id === Number(selectedMarque)) &&
+        p?.marqueId === Number(selectedMarque)) &&
       (!prixMax || p?.prix <= Number(prixMax))
     );
   });

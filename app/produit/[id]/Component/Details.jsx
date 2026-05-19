@@ -74,15 +74,15 @@ export default function ProduitDetail({
   // ================= CHARGEMENT DES PRODUITS SIMILAIRES =================
   useEffect(() => {
     const fetchSimilar = async () => {
-      if (!produit?.marque?.id) return;
+      if (!produit?.marqueId) return;
 
       try {
         const res = await axios.get(
           `${API_URL}/api/produitss/similar`,
           {
             params: {
-              marqueId: produit.marque.id,
-              categorieId: produit?.sousCategorie?.id,
+              marqueId: produit.marqueId,
+              categorieId: produit?.sousCategorieId,
             },
           }
         );
@@ -243,10 +243,9 @@ export default function ProduitDetail({
           <Etoiles note={produit.moyenne} />
         </div>
 
-        <span className="text-sm font-medium text-gray-500">
-          ({produit.moyenne.toFixed(1)} / 5)
-        </span>
-
+   <span className="text-sm font-medium text-gray-500">
+  ({(Number(produit?.moyenne) || 0).toFixed(1)} / 5)
+</span>
         <span className="px-3 py-1 rounded-full bg-gray-100 text-gray-600 text-xs font-semibold">
           ⭐ Très apprécié
         </span>
@@ -258,7 +257,7 @@ export default function ProduitDetail({
   <div className="bg-gray-50 border border-gray-100 rounded-2xl p-4">
     <p className="text-sm text-gray-500 mb-1">Catégorie</p>
     <p className="text-lg font-semibold text-gray-800">
-      {produit?.sousCategorie?.nom || "Non définie"}
+      {produit?.sousCategorieNom || "Non définie"}
     </p>
   </div>
 
@@ -427,7 +426,18 @@ export default function ProduitDetail({
       ✅ {message}
     </div>
   )}
+{/* VENDEUR */}
+<div className="bg-gray-50 border border-gray-100 rounded-2xl p-4 mt-4">
+  <p className="text-sm text-gray-500 mb-1">
+    Vendu par
+  </p>
 
+  <p className="text-lg font-semibold text-[#063c28]">
+    {produit?.vendeurPrenom && produit?.vendeurNom
+      ? `${produit.vendeurPrenom} ${produit.vendeurNom}`
+      : "Vendeur inconnu"}
+  </p>
+</div>
   {/* GARANTIES */}
   <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4">
     <div className="bg-gray-50 p-4 rounded-2xl text-center">

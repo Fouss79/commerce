@@ -12,30 +12,29 @@ const FormSousCategorie = ({ onSubmitSuccess }) => {
   const [categorieId, setCategorieId] = useState("");
   const [categories, setCategories] = useState([]);
 
-  const { id } = useParams();
+  const params = useParams();
+  const id = params?.id;
 
   // ================= LOAD CATEGORIES =================
   useEffect(() => {
     axios
       .get("http://localhost:8080/api/categoriee")
-      .then((res) => {
-        setCategories(res.data);
-      })
+      .then((res) => setCategories(res.data))
       .catch((err) => console.log(err));
   }, []);
 
   // ================= LOAD (UPDATE) =================
   useEffect(() => {
-    if (id) {
-      axios
-        .get(`http://localhost:8080/api/souscategories/${id}`)
-        .then((res) => {
-          setNom(res.data.nom);
-          setDescription(res.data.description);
-          setCategorieId(res.data.categorieId);
-        })
-        .catch((err) => console.log(err));
-    }
+    if (!id) return;
+
+    axios
+      .get(`http://localhost:8080/api/souscategories/${id}`)
+      .then((res) => {
+        setNom(res.data.nom || "");
+        setDescription(res.data.description || "");
+        setCategorieId(res.data.categorieId || "");
+      })
+      .catch((err) => console.log(err));
   }, [id]);
 
   // ================= SAVE =================
@@ -65,7 +64,10 @@ const FormSousCategorie = ({ onSubmitSuccess }) => {
     })
       .then((res) => {
         console.log(res.data);
-        onSubmitSuccess?.();
+
+        if (onSubmitSuccess) {
+          onSubmitSuccess();
+        }
       })
       .catch((err) => console.log(err));
   };
@@ -81,16 +83,17 @@ const FormSousCategorie = ({ onSubmitSuccess }) => {
       </h1>
 
       <form className="flex flex-col gap-3" onSubmit={saveSousCategorie}>
-        
         {/* IMAGE */}
         <label>Image</label>
+
         {selectedImage && (
           <img
             src={URL.createObjectURL(selectedImage)}
-            className="h-32"
+            className="h-32 object-cover"
             alt="preview"
           />
         )}
+
         <input type="file" onChange={handleImageChange} />
 
         {/* NOM */}
@@ -111,7 +114,7 @@ const FormSousCategorie = ({ onSubmitSuccess }) => {
           className="px-4 py-2 border rounded"
         />
 
-        {/* SELECT CATEGORIE */}
+        {/* CATEGORIE */}
         <label>Catégorie</label>
         <select
           value={categorieId}
@@ -127,7 +130,7 @@ const FormSousCategorie = ({ onSubmitSuccess }) => {
           ))}
         </select>
 
-        {/* SUBMIT */}
+        {/* BUTTON */}
         <button className="bg-[#15878f] text-white py-2 rounded">
           {id ? "Mettre à jour" : "Ajouter"}
         </button>

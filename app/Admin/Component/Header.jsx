@@ -21,9 +21,13 @@ const Header = () => {
   const [search, setSearch] = useState("");
 
   // Déterminer la page de destination selon le rôle
-  const dashboardLink =
-    user?.role === "ADMIN" ? "/Admin" : "/User";
+ const dashboardLinkMap = {
+  ADMIN: "/Admin",
+  VENDEUR: "/Vendeur",
+  CLIENT: "/Client",
+};
 
+const dashboardLink = dashboardLinkMap[user?.role] || "/User";
   const total =
     cartItems?.reduce(
       (acc, item) => acc + item.prix * item.quantite,

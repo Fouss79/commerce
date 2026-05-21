@@ -29,8 +29,15 @@ export default function Register() {
     setError("");
 
     try {
-      await axios.post("http://localhost:8080/api/auth/register", form);
-
+    await axios.post(
+  "http://localhost:8080/api/auth/register",
+  form,
+  {
+    headers: {
+      "Content-Type": "application/json"
+    }
+  }
+);
       // 🔥 redirection login
       router.push("/login");
 

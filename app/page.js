@@ -9,7 +9,8 @@ import './Produits.css';
 import Scrollpane from "./Component/Scrollpane";
 import MegaMenu from "./Component/MegaMenu";
 
-import AvisUtilisateurs from "./Component/AvisUtilisateurs"
+import AvisUtilisateurs from "./Component/AvisUtilisateurs";
+import AbonnementSection from "./Component/Abonnementsection"
 import { useCart } from "./context/CartContext";
 import ListCategorie from "./Admin/categorie/component/ListCategorie";
 import Carousel from "./Component/Carousel";
@@ -278,7 +279,7 @@ shadow-xl flex flex-col md:flex-row items-center overflow-hidden">
 </section>
 
 
-   
+   <AbonnementSection/>
 <AvisUtilisateurs/>
 
   

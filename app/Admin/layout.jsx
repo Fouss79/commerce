@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useRef, useEffect, useState } from 'react';
-import Sidebar from './Component/sidebar';
+import Sidebar from './Component/Sidebar';
 import Header from './Component/Header';
 import { usePathname } from 'next/navigation';
 import { useCart } from '../context/CartContext';

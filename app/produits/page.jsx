@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Suspense } from "react";
 import axios from "axios";
 import { useSearchParams } from "next/navigation";
 import Carousel from "../Component/Carousel";
@@ -8,7 +8,7 @@ import MegaMenu from "../Component/MegaMenu";
 import ListProduits from "../Admin/produit/component/ListProduits";
 import api from "../../lib/api";
 
-const PageProduits = () => {
+function PageProduitsContent() {
   const searchParams = useSearchParams();
 
   const sousCategorieId = searchParams.get("sousCategorie");
@@ -23,25 +23,22 @@ const PageProduits = () => {
   useEffect(() => {
     if (!sousCategorieId) return;
 
-    api.get(`/api/produitss`)
-      .then(res => {
-        let data = res.data;
+    api.get(`/api/produitss`).then((res) => {
+      let data = res.data;
 
-        // filtrer par sous-catégorie
-        data = data.filter(
-          p => p.sousCategorie?.id === Number(sousCategorieId)
-        );
+      // filtrer par sous-catégorie
+      data = data.filter(
+        (p) => p.sousCategorie?.id === Number(sousCategorieId)
+      );
 
-        setProduits(data);
-      });
+      setProduits(data);
+    });
 
-    api.get("/api/marque")
-      .then(res => setMarques(res.data));
-
+    api.get("/api/marque").then((res) => setMarques(res.data));
   }, [sousCategorieId]);
 
   // ================= FILTER =================
-  const produitsFiltres = produits.filter(p => {
+  const produitsFiltres = produits.filter((p) => {
     return (
       (!selectedMarque || p.marque?.id === Number(selectedMarque)) &&
       (!prixMax || p.prix <= Number(prixMax))
@@ -49,11 +46,19 @@ const PageProduits = () => {
   });
 
   return (
-    <div>    
-       <Carousel/>
-      <MegaMenu/>
-    <ListProduits/>
+    <div>
+      <Carousel />
+      <MegaMenu />
+      <ListProduits />
     </div>
+  );
+}
+
+const PageProduits = () => {
+  return (
+    <Suspense fallback={<div className="min-h-screen" />}>
+      <PageProduitsContent />
+    </Suspense>
   );
 };
 

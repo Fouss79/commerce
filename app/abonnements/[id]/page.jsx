@@ -1,13 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import axios from "axios";
+import { useEffect, useState, Suspense } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { CheckCircle, Loader2 } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 import api from "../../../lib/api";
 
-export default function AbonnementPage() {
+function AbonnementContent() {
   const { id } = useParams();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -56,40 +55,35 @@ export default function AbonnementPage() {
   // SUBSCRIBE FUNCTION
   // =========================
   const handleSubscribe = async () => {
-  if (!user) {
-    router.push("/login");
-    return;
-  }
+    if (!user) {
+      router.push("/login");
+      return;
+    }
 
-  setProcessing(true);
-  setMessage("");
+    setProcessing(true);
+    setMessage("");
 
-  try {
-    const res = await api.post(
-      `/api/abonnement/init`,
-      null,
-      {
+    try {
+      const res = await api.post(`/api/abonnement/init`, null, {
         params: {
           userId: user.id,
           planId: plan.id,
         },
-      }
-    );
+      });
 
-    const paymentUrl = res.data.paymentUrl;
+      const paymentUrl = res.data.paymentUrl;
 
-    setMessage("Redirection vers le paiement...");
+      setMessage("Redirection vers le paiement...");
 
-    // 🔥 REDIRECTION VERS URL BACKEND
-    window.location.href = paymentUrl;
-
-  } catch (err) {
-    console.error(err);
-    setMessage(err.response?.data || "Erreur lors de la souscription");
-  } finally {
-    setProcessing(false);
-  }
-};
+      // 🔥 REDIRECTION VERS URL BACKEND
+      window.location.href = paymentUrl;
+    } catch (err) {
+      console.error(err);
+      setMessage(err.response?.data || "Erreur lors de la souscription");
+    } finally {
+      setProcessing(false);
+    }
+  };
 
   // =========================
   // LOADING
@@ -124,9 +118,7 @@ export default function AbonnementPage() {
         </p>
 
         <p className="text-2xl font-bold mb-8">
-          {plan.montant === 0
-            ? "Gratuit"
-            : `${plan.montant} FCFA`}
+          {plan.montant === 0 ? "Gratuit" : `${plan.montant} FCFA`}
         </p>
 
         {/* FEATURES */}
@@ -173,5 +165,19 @@ export default function AbonnementPage() {
         </button>
       </div>
     </div>
+  );
+}
+
+export default function AbonnementPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex items-center justify-center min-h-screen">
+          <Loader2 className="animate-spin" size={40} />
+        </div>
+      }
+    >
+      <AbonnementContent />
+    </Suspense>
   );
 }

@@ -1,12 +1,11 @@
 // app/Component/Menusouscat.jsx
 "use client";
 
-import React, { useEffect, useState } from "react";
-
+import React, { useEffect, useState, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import api from "../../lib/api";
 
-const Menusouscat = () => {
+function MenusouscatContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
@@ -27,7 +26,8 @@ const Menusouscat = () => {
       return;
     }
 
-    api.get(`/api/souscategories/categorie/${categorieId}`)
+    api
+      .get(`/api/souscategories/categorie/${categorieId}`)
       .then((res) => {
         if (Array.isArray(res.data)) {
           setSousCategories(res.data);
@@ -36,10 +36,7 @@ const Menusouscat = () => {
         }
       })
       .catch((err) => {
-        console.error(
-          "Erreur chargement des sous-catégories :",
-          err
-        );
+        console.error("Erreur chargement des sous-catégories :", err);
         setSousCategories([]);
       });
   }, [categorieId, API_URL]);
@@ -55,7 +52,6 @@ const Menusouscat = () => {
   return (
     <div className="bg-white shadow-sm border-b px-6 py-4">
       <div className="flex flex-wrap gap-3 items-center">
-        
         {/* Bouton "Tout" */}
         <button
           onClick={() =>
@@ -95,6 +91,14 @@ const Menusouscat = () => {
         })}
       </div>
     </div>
+  );
+}
+
+const Menusouscat = () => {
+  return (
+    <Suspense fallback={null}>
+      <MenusouscatContent />
+    </Suspense>
   );
 };
 

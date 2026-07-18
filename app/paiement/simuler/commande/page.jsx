@@ -1,10 +1,10 @@
 "use client";
 
 import { useSearchParams, useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import api from "../../../../lib/api";
 
-export default function PaiementSimulePage() {
+function PaiementSimuleContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
@@ -90,5 +90,17 @@ export default function PaiementSimulePage() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function PaiementSimulePage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
+        <p className="text-gray-500">Chargement...</p>
+      </div>
+    }>
+      <PaiementSimuleContent />
+    </Suspense>
   );
 }

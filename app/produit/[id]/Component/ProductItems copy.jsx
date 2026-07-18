@@ -7,6 +7,8 @@ import { useState } from "react";
 
 const ProductItem = ({ product,AjtePagne }) => {
   const [isFavori, setIsFavori] = useState(false);
+  const API_URL = process.env.NEXT_PUBLIC_API_URL;
+
 
   return (
     <div className="group relative bg-white rounded-xl shadow-sm hover:shadow-xl transition duration-300 overflow-hidden">
@@ -28,7 +30,7 @@ const ProductItem = ({ product,AjtePagne }) => {
       <Link href={`/produit/${product.id}`}>
         <div className="h-52 flex items-center justify-center bg-gray-50">
           <img
-            src={`http://localhost:8080/${product.image}`}
+            src={`${API_URL}${product.image}`}
             alt={product.nom}
             className="h-full object-contain transition-transform duration-300 group-hover:scale-105"
           />
@@ -75,7 +77,7 @@ const ProductItem = ({ product,AjtePagne }) => {
               flex items-center justify-center gap-2
             "
           >
-            <Eye size={18} className="text-yellow-500" />
+            <Eye size={18} className="text-yellow-600" />
             Voir details
           </button>
 

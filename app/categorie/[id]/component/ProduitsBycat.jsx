@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import ProductItem from '../../../Admin/produit/component/ProductItems';
+import api from '@/lib/api';
 
  // Vérifiez le chemin
 
@@ -13,7 +14,7 @@ const ProduitsByCat = ({ AjtePagne,id }) => {
 
   // Fonction pour supprimer un produit
   const deleteid = (produit_id) => {
-    axios.delete(`http://localhost:8080/api/produits/${produit_id}`)
+    api.delete(`/api/produits/${produit_id}`)
       .then((response) => {
         console.log(response.data);
         fetchProduits(); // Recharger les produits après la suppression
@@ -28,10 +29,10 @@ const ProduitsByCat = ({ AjtePagne,id }) => {
     setLoading(true); // Début du chargement
     try {
       const url = id
-        ? `http://localhost:8080/api/produits/categorie/${id}` // Si "categorieId" est présent dans l'URL
-        : 'http://localhost:8080/api/produitss'; // Sinon, récupérer tous les produits
+        ? `/api/produits/categorie/${id}` // Si "categorieId" est présent dans l'URL
+        : '/api/produitss'; // Sinon, récupérer tous les produits
 
-      const response = await axios.get(url);
+      const response = await api.get(url);
       setProduits(response.data);
     } catch (error) {
       setError('Erreur lors de la récupération des produits'); // Mettre à jour l'état d'erreur

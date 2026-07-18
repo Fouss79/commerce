@@ -4,6 +4,8 @@ import { Heart, Eye, Star } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 
+   const API_URL = "http://localhost:8080";
+
 const ProductItem = ({ product }) => {
   const [isFavori, setIsFavori] = useState(false);
 
@@ -64,9 +66,14 @@ const ProductItem = ({ product }) => {
           <div className="absolute w-40 h-40 bg-green-100/40 rounded-full blur-3xl"></div>
 
           {/* Image produit */}
+         <img
+                  
+                  className='h-16 rounded'
+                />
+
           <img
-            src={`http://localhost:8080/${product.image}`}
-            alt={product.nom}
+            src={product.image}
+                  alt={product.nom}
             className="
               relative z-10 h-[85%] object-contain
               transition-all duration-700
@@ -134,16 +141,14 @@ const ProductItem = ({ product }) => {
         <Link href={`/produit/${product.id}`}>
           <button
             className="
-              mt-4 w-full py-3 rounded-2xl
-              bg-[#063c28] text-white
-              text-sm font-semibold
-              shadow-lg
-              hover:bg-[#0a5a3d]
-              hover:scale-[1.02]
-              transition-all duration-300
+              mt-3 w-full py-2 rounded-lg
+              bg-[#063c28] text-white text-sm font-medium
+              hover:bg-gray-800 transition
+              flex items-center justify-center gap-2
             "
           >
-            Voir le produit
+            <Eye size={18} className="text-yellow-500" />
+            Voir details
           </button>
         </Link>
       </div>

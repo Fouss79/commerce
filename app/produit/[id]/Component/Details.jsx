@@ -9,6 +9,7 @@ import { Navigation, Pagination } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
+import { motion, AnimatePresence } from "framer-motion";
 
 import { useAuth } from "../../../context/AuthContext";
 import { useCart } from "../../../context/CartContext";
@@ -16,6 +17,7 @@ import { useCart } from "../../../context/CartContext";
 import AvisSection from "./AvisSection";
 import Etoiles from "./Etoiles";
 import ProductItem from "./ProductItems copy";
+import api from "../../../../lib/api";
 
 export default function ProduitDetail({
   produit,
@@ -32,6 +34,7 @@ export default function ProduitDetail({
   const [tri, setTri] = useState("default");
   const [quantite, setQuantite] = useState(1);
   const [message, setMessage] = useState('');
+  const [activeTab, setActiveTab] = useState("description");
 
   const swiperRef = useRef(null);
 
@@ -77,8 +80,8 @@ export default function ProduitDetail({
       if (!produit?.marqueId) return;
 
       try {
-        const res = await axios.get(
-          `${API_URL}/api/produitss/similar`,
+        const res = await api.get(
+          `/api/produitss/similar`,
           {
             params: {
               marqueId: produit.marqueId,
@@ -136,7 +139,25 @@ export default function ProduitDetail({
       variantes.map((v) => [v.couleur, v])
     ).values(),
   ];
+   const handleAddToCart = () => {
+    if (!selectedVariante) return alert("Choisissez une variante");
 
+    if (quantite > selectedVariante.stock)
+      return alert("Stock insuffisant");
+
+    addToCart({
+      produitId: produit.id,
+      varianteId: selectedVariante.id,
+      nom: produit.nom,
+      couleur: selectedVariante.couleur,
+      prix: selectedVariante.prix,
+      image: finalImage,
+      quantite,
+    });
+
+    setMessage("Produit ajouté au panier !");
+    setTimeout(() => setMessage(""), 2500);
+  };
   return (
     <div className="max-w-6xl mx-auto">
       {/* ================= SECTION PRINCIPALE ================= */}
@@ -220,9 +241,65 @@ export default function ProduitDetail({
       </button>
     ))}
   </div>
+  <div style={{ marginTop: 64 }}>
+          {/* Tab bar */}
+          <div style={{
+            display: "flex", borderBottom: "2px solid #e3ede7",
+            marginBottom: 32, gap: 0,
+          }}>
+            {[
+              { key: "description", label: "Description" },
+              { key: "avis", label: "Avis clients" },
+            ].map((tab) => (
+              <button
+                key={tab.key}
+                onClick={() => setActiveTab(tab.key)}
+                style={{
+                  padding: "14px 28px",
+                  background: "none", border: "none",
+                  fontSize: 15, fontWeight: 700,
+                  cursor: "pointer",
+                  color: activeTab === tab.key ? "#063c28" : "#9ca3af",
+                  borderBottom: activeTab === tab.key
+                    ? "3px solid #063c28"
+                    : "3px solid transparent",
+                  marginBottom: -2,
+                  transition: "all 0.15s",
+                }}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+
+          {activeTab === "description" && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3 }}
+              style={{
+                background: "#f8faf9", borderRadius: 20,
+                padding: "28px 32px", border: "1px solid #e3ede7",
+                fontSize: 16, color: "#374151", lineHeight: 1.8,
+              }}
+            >
+              {produit.description || "Aucune description disponible pour ce produit."}
+            </motion.div>
+          )}
+
+          {activeTab === "avis" && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              <AvisSection produitId={produit.id} utilisateurId={user?.id} />
+            </motion.div>
+          )}
+        </div>
 </div>
 
-        {/* ================= INFORMATIONS PRODUIT ================= */}
+    
        {/* ================= INFORMATIONS PRODUIT ================= */}
 <div className="space-y-6">
   {/* BADGES */}
@@ -261,27 +338,22 @@ export default function ProduitDetail({
     </p>
   </div>
 
-  {/* DESCRIPTION */}
-  <div>
-    <h3 className="text-lg font-bold text-gray-800 mb-3">
-      Description
-    </h3>
-    <p className="text-gray-600 leading-relaxed">
-      {produit.description}
-    </p>
-  </div>
 
   {/* PRIX */}
-  <div
-    className="
-      bg-gradient-to-r from-[#063c28] to-[#0a5a3d]
-      rounded-3xl p-6 text-white shadow-xl
-    "
-  >
+ <div className="
+  relative overflow-hidden
+  bg-gradient-to-br
+  from-[#063c28]
+  via-[#0a5a3d]
+  to-[#0d734b]
+  rounded-3xl
+  p-8
+  shadow-[0_20px_50px_rgba(6,60,40,0.25)]
+">
     <p className="text-sm text-green-100 mb-2">Prix actuel</p>
 
     <div className="flex items-center gap-4 flex-wrap">
-      <span className="text-3xl md:text-4xl font-extrabold text-yellow-400">
+      <span className="text-3xl md:text-4xl font-extrabold text-yellow-600">
         {(selectedVariante?.prix || produit.prix)?.toLocaleString()} FCFA
       </span>
 
@@ -289,16 +361,14 @@ export default function ProduitDetail({
   </div>
 
   {/* STOCK */}
-  <div className="flex items-center gap-3">
-    <div className="w-3 h-3 rounded-full bg-green-500 animate-pulse"></div>
-    <span className="text-gray-700 font-medium">
-      En stock :{" "}
-      <span className="font-bold text-[#063c28]">
-        {selectedVariante?.stock ?? 0}
-      </span>{" "}
-      unité(s)
-    </span>
-  </div>
+ <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-green-50 border border-green-200 w-fit">
+  <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+  <span className="text-green-700 font-semibold text-sm">
+    {selectedVariante?.stock > 0
+      ? `${selectedVariante.stock} en stock`
+      : "Rupture de stock"}
+  </span>
+</div>
 
   {/* COULEURS */}
   <div>
@@ -373,44 +443,31 @@ export default function ProduitDetail({
   </div>
 
   {/* BOUTON AJOUT AU PANIER */}
-  <button
-    onClick={() => {
-      if (!selectedVariante) {
-        return alert("Choisissez une variante.");
-      }
+  <button onClick={handleAddToCart}
+  className="
+    relative overflow-hidden
+    w-full py-5 rounded-3xl
+    bg-gradient-to-r
+    from-[#063c28]
+    to-[#0a5a3d]
+    text-white
+    font-bold
+    text-lg
+    shadow-xl
+    scale-[1.02]
+    transition-all
+    duration-300
+    group
+  "
+  
+>
+  <span className="absolute inset-0 bg-white/10 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></span>
 
-      if (quantite > selectedVariante.stock) {
-        return alert("Stock insuffisant.");
-      }
-
-      addToCart({
-        produitId: produit.id,
-        varianteId: selectedVariante.id,
-        nom: produit.nom,
-        couleur: selectedVariante.couleur,
-        taille: selectedVariante.taille,
-        prix: selectedVariante.prix,
-        image: finalImage,
-        quantite: quantite,
-      });
-
-      setMessage("Produit ajouté au panier avec succès !");
-      setTimeout(() => setMessage(""), 3000);
-    }}
-    className="
-      w-full py-4 rounded-3xl
-      bg-gradient-to-r from-[#063c28] to-[#0a5a3d]
-      text-white font-bold text-lg
-      shadow-2xl
-      hover:scale-[1.02]
-      hover:shadow-green-200
-      transition-all duration-300
-      flex items-center justify-center gap-3
-    "
-  >
+  <span className="relative flex items-center justify-center gap-3">
     <ShoppingCart size={24} className="text-yellow-400" />
     Ajouter au panier
-  </button>
+  </span>
+</button>
 
   {/* MESSAGE DE SUCCÈS */}
   {message && (
@@ -427,27 +484,60 @@ export default function ProduitDetail({
     </div>
   )}
 {/* VENDEUR */}
-<div className="bg-gray-50 border border-gray-100 rounded-2xl p-4 mt-4">
-  <p className="text-sm text-gray-500 mb-1">
-    Vendu par
-  </p>
 
-  <p className="text-lg font-semibold text-[#063c28]">
-    {produit?.vendeurPrenom && produit?.vendeurNom
-      ? `${produit.vendeurPrenom} ${produit.vendeurNom}`
-      : "Vendeur inconnu"}
-  </p>
-</div>
-  {/* GARANTIES */}
-  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4">
-    <div className="bg-gray-50 p-4 rounded-2xl text-center">
-         <p className="text-sm font-medium text-gray-700">
-        Qualité garantie
-      </p>
-    </div>
+
+<div className="
+  flex items-center gap-4
+  p-5
+  rounded-3xl
+  border
+  border-gray-200
+  bg-white
+  shadow-sm
+">
+  <div className="
+    w-14 h-14
+    rounded-full
+    bg-[#063c28]
+    text-yellow-400
+    font-bold
+    flex items-center justify-center
+  ">
+    {produit?.vendeurPrenom?.[0]}
+    {produit?.vendeurNom?.[0]}
+  </div>
+
+  <div>
+    <p className="text-sm text-gray-500">
+      Vendeur certifié
+    </p>
+
+    <p className="font-bold text-[#063c28]">
+      {produit?.vendeurPrenom} {produit?.vendeurNom}
+    </p>
   </div>
 </div>
-      
+  {/* GARANTIES */}
+  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+  <div className="bg-white rounded-2xl p-4 shadow-sm border">
+    🛡️ Paiement sécurisé
+  </div>
+
+  <div className="bg-white rounded-2xl p-4 shadow-sm border">
+    🚚 Livraison rapide
+  </div>
+
+  <div className="bg-white rounded-2xl p-4 shadow-sm border">
+    🔄 Retour facile
+  </div>
+
+  <div className="bg-white rounded-2xl p-4 shadow-sm border">
+    ⭐ Qualité garantie
+  </div>
+</div>
+</div>
+       
+
       </div>
 
       {/* ================= PRODUITS SIMILAIRES ================= */}
@@ -476,10 +566,9 @@ export default function ProduitDetail({
       </div>
 
       {/* ================= AVIS ================= */}
-      <AvisSection
-        produitId={produit.id}
-        utilisateurId={user?.id}
-      />
+     
     </div>
   );
 }
+
+

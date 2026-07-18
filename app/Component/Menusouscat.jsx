@@ -2,8 +2,9 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+
 import { useSearchParams, useRouter } from "next/navigation";
+import api from "../../lib/api";
 
 const Menusouscat = () => {
   const searchParams = useSearchParams();
@@ -26,8 +27,7 @@ const Menusouscat = () => {
       return;
     }
 
-    axios
-      .get(`${API_URL}/api/souscategories/categorie/${categorieId}`)
+    api.get(`/api/souscategories/categorie/${categorieId}`)
       .then((res) => {
         if (Array.isArray(res.data)) {
           setSousCategories(res.data);

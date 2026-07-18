@@ -10,13 +10,17 @@ import {
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 
-import axios from "axios";
+import api from "../../lib/api";
+
 import { useAuth } from "../context/AuthContext";
 import { useCart } from "../context/CartContext";
+import axios from "axios";
 export default function CheckoutPage() {
   const [step, setStep] = useState(1);
   const { cartItems, removeFromCart, emptyCart, addToCart } = useCart();
   const router = useRouter();
+  const API_URL = process.env.NEXT_PUBLIC_API_URL;
+  
 const [formData, setFormData] = useState({
   nom: "",
   telephone: "",
@@ -69,6 +73,8 @@ const handleConfirm = async () => {
   try {
     const token = localStorage.getItem("token");
     const user = JSON.parse(localStorage.getItem("user"));
+    console.log("TOKEN =", token);
+    console.log("USER =", user);
 
     // Vérification utilisateur connecté
     if (!user || !token) {
@@ -84,24 +90,25 @@ const handleConfirm = async () => {
     }
 
     // Construction de la commande
-    const order = {
-      user: { id: user.id },
+   const order = {
+  userId: user.id,
 
-      details: cartItems.map((item) => ({
-        produit: { id: item.produitId },
-        quantite: item.quantite,
-        taille: item.taille,
-        couleur: item.couleur,
-        prixUnitaire: item.prix,
-      })),
+  details: cartItems.map((item) => ({
+    produitId: item.produitId,
+    varianteId: item.varianteId ?? null,
+    quantite: item.quantite,
+  })),
 
-      nomClient: formData.nom,
-      telephone: formData.telephone,
-      adresse: formData.adresse,
-      ville: formData.ville,
-      modePaiement: formData.paiement,
-    };
+  nomClient: formData.nom,
+  telephone: formData.telephone,
+  adresse: formData.adresse,
+  ville: formData.ville,
+  modePaiement: formData.paiement,
+};
 
+console.log("PANIER =", cartItems);
+console.log("COMMANDE =", order);
+console.log(cartItems);
     // Total avec frais de livraison
     const montantFinal = (total || 0) + 2000;
 
@@ -110,32 +117,17 @@ const handleConfirm = async () => {
     // ======================================================
     if (formData.paiement === "carte") {
       // 1. Créer d'abord la commande en base avec statut EN_ATTENTE
-      const commandeResponse = await axios.post(
-        "http://localhost:8080/api/commandes",
-        order,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      
+      const commandeResponse = await api.post("/api/commandes", order);
 
       const commande = commandeResponse.data;
 
       // 2. Initialiser le paiement avec l'ID de la commande
-      const paiementResponse = await axios.post(
-        "http://localhost:8080/api/paiement/init",
-        {
-          commandeId: commande.id,
-          montant: montantFinal,
-          userId: user.id,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+     const paiementResponse = await api.post("/api/paiement/init", {
+  commandeId: commandeResponse.data.id,
+  montant: montantFinal,
+  userId: user.id,
+});
 
       // 3. Redirection vers la page de paiement simulée
       window.location.href = paiementResponse.data.paymentUrl;
@@ -144,16 +136,7 @@ const handleConfirm = async () => {
 
     // ======================================================
     // 🚚 PAIEMENT À LA LIVRAISON
-    // ======================================================
-    await axios.post(
-      "http://localhost:8080/api/commandes",
-      order,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+      await api.post("/api/commandes", order); 
 
     // Vider le panier
     emptyCart();

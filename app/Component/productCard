@@ -1,0 +1,36 @@
+import { motion } from "framer-motion";
+import Image from "next/image";
+
+export default function ProductCard({ product }) {
+  return (
+    <motion.div
+      whileHover={{ scale: 1.03 }}
+      transition={{ type: "spring", stiffness: 200 }}
+      className="bg-white rounded-2xl shadow-md overflow-hidden"
+    >
+      <div className="relative h-48">
+        <Image
+          src={product.image}
+          fill
+          className="object-cover"
+          alt={product.name}
+        />
+      </div>
+
+      <div className="p-4">
+        <h3 className="font-semibold">{product.name}</h3>
+        <p className="text-gray-500 text-sm">{product.description}</p>
+
+        <div className="mt-2 flex justify-between items-center">
+          <span className="text-[#063c28] font-bold">
+            {product.price} FCFA
+          </span>
+
+          <button className="bg-[#063c28] text-white px-3 py-1 rounded-lg text-sm hover:bg-emerald-600 transition">
+            Ajouter
+          </button>
+        </div>
+      </div>
+    </motion.div>
+  );
+}

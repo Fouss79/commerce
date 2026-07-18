@@ -1,14 +1,17 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+
+import api from '../../../../lib/api';
 
 const ListCate = ({ refreshKey }) => {
   const [categories, setCategories] = useState([]);
 
+  const API_URL = "https://e-commerce-backend-7-72oy.onrender.com";
+
   // Function to delete a category by ID
   const deleteid = (categorie_id) => {
-    axios.delete(`http://localhost:8080/api/categoriee/${categorie_id}`)
+    api.delete(`/api/categoriee/${categorie_id}`)
       .then((response) => {
         console.log(response.data);
         fetchCategories(); // Reload categories after deletion
@@ -21,7 +24,7 @@ const ListCate = ({ refreshKey }) => {
   // Function to fetch the list of categories (adapted for DTO)
   const fetchCategories = async () => {
     try {
-      const response = await axios.get('http://localhost:8080/api/categoriee');
+      const response = await api.get('/api/categoriee');
       console.log(response.data);
 
       // Verify if the received data is an array
@@ -65,11 +68,13 @@ const ListCate = ({ refreshKey }) => {
                 <td className="border border-y px-3 py-2">{categorie.nom}</td>
                 <td className="border border-y px-3 py-2">{categorie.description}</td>
                 <td className="border border-y px-3 py-2">
-                  <img 
-                    src={`http://localhost:8080/${categorie.image}`} 
-                    alt={categorie.nom} 
-                    className="h-auto w-auto object-cover" 
-                  />
+                
+
+<img 
+  src={`${API_URL}${categorie.image}`} 
+  alt={categorie.nom}
+  className="h-auto w-auto object-cover"
+/>
                 </td>
                 <td className="border border-y px-3 py-2">
                   <button

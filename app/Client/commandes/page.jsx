@@ -13,6 +13,7 @@ import {
   Clock,
   XCircle,
 } from "lucide-react";
+import api from "../../../lib/api";
 
 export default function MesCommandesPage() {
   const [commandes, setCommandes] = useState([]);
@@ -32,8 +33,8 @@ export default function MesCommandesPage() {
         return;
       }
 
-      const res = await axios.get(
-        `http://localhost:8080/api/commandes/user/${user.id}`,
+      const res = await api.get(
+        `/api/commandes/user/${user.id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

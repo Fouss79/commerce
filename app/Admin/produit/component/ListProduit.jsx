@@ -3,14 +3,16 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Link from 'next/link';
+import api from '../../../../lib/api';
 
 const ListProduit = ({ refreshKey }) => {
   const [produits, setProduits] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  
+  const API_URL = "https://e-commerce-backend-7-72oy.onrender.com";
+
   const deleteid = (produit_id) => {
-    axios.delete(`http://localhost:8080/api/produits/${produit_id}`)
+    api.delete(`/api/produits/${produit_id}`)
       .then(() => {
         fetchProduits();
       })
@@ -22,7 +24,7 @@ const ListProduit = ({ refreshKey }) => {
   const fetchProduits = async () => {
     setLoading(true);
     try {
-      const response = await axios.get('http://localhost:8080/api/produitss');
+      const response = await api.get('/api/produitss');
       setProduits(response.data);
     } catch (error) {
       setError('Erreur lors de la récupération des produits');
@@ -64,7 +66,7 @@ const ListProduit = ({ refreshKey }) => {
 
               {produit.image && (
                 <img 
-                  src={`http://localhost:8080/${produit.image}`} 
+                  src={`${API_URL}${produit.image}`} 
                   alt={produit.nom} 
                   className='h-16 rounded' 
                 />

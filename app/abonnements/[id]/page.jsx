@@ -5,6 +5,7 @@ import axios from "axios";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { CheckCircle, Loader2 } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
+import api from "../../../lib/api";
 
 export default function AbonnementPage() {
   const { id } = useParams();
@@ -28,7 +29,7 @@ export default function AbonnementPage() {
   useEffect(() => {
     const fetchPlan = async () => {
       try {
-        const res = await axios.get(`${API_URL}/api/plans/${id}`);
+        const res = await api.get(`/api/plans/${id}`);
         setPlan(res.data);
       } catch (err) {
         console.error(err);
@@ -64,8 +65,8 @@ export default function AbonnementPage() {
   setMessage("");
 
   try {
-    const res = await axios.post(
-      `${API_URL}/api/abonnement/init`,
+    const res = await api.post(
+      `/api/abonnement/init`,
       null,
       {
         params: {

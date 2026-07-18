@@ -11,6 +11,7 @@ import {
 import ProductItem from "./ProductItems";
 import styles from "./produit.module.css";
 import { useCart } from "../../../context/CartContext";
+import api from "../../../../lib/api";
 
 const ListProduits = ({ refreshKey, AjtePagne }) => {
   const [produits, setProduits] = useState([]);
@@ -33,8 +34,8 @@ const ListProduits = ({ refreshKey, AjtePagne }) => {
   /* ================= SUPPRESSION ================= */
   const deleteid = async (produit_id) => {
     try {
-      await axios.delete(
-        `http://localhost:8080/api/produitss/${produit_id}`
+      await api.delete(
+        `/api/produitss/${produit_id}`
       );
       fetchProduits();
     } catch (error) {
@@ -48,8 +49,8 @@ const ListProduits = ({ refreshKey, AjtePagne }) => {
     setError(null);
 
     try {
-      const response = await axios.get(
-        "http://localhost:8080/api/produitss"
+      const response = await api.get(
+        "/api/produitss"
       );
       setProduits(response.data);
     } catch (error) {

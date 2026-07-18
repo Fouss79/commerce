@@ -2,14 +2,17 @@
 
 import React, { useEffect, useState } from "react";
 import Slider from "react-slick";
-import axios from "axios";
+
+import api from "../../lib/api";
 
 const Carousel = () => {
   const [images, setImages] = useState([]);
+  const API_URL = "https://e-commerce-backend-7-72oy.onrender.com";
+ 
+
 
   useEffect(() => {
-    axios
-      .get("http://localhost:8080/api/carousel/list")
+    api.get("/api/carousel/list")
       .then((response) => setImages(response.data))
       .catch((error) =>
         console.error("Erreur lors du chargement des images", error)
@@ -33,7 +36,7 @@ const Carousel = () => {
       <Slider {...settings}>
         {images.map((img) => (
           <div key={img.id}>
-            <img
+              <img
               src={img.url}
               alt={img.description}
               className="w-full h-[275px] object-cover"

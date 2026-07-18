@@ -1,13 +1,15 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+
+import api from "../../../../lib/api";
 
 const FormulaireProduit = ({ onSubmitSuccess }) => {
   const [nom, setNom] = useState("");
   const [prix, setPrix] = useState("");
   const [description, setDescription] = useState("");
   const [image, setImage] = useState(null);
+  
 
   const [sousCategories, setSousCategories] = useState([]);
   const [marques, setMarques] = useState([]);
@@ -21,15 +23,15 @@ const FormulaireProduit = ({ onSubmitSuccess }) => {
 
   // ================= LOAD DATA =================
   useEffect(() => {
-    axios
-      .get(`${API_URL}/api/souscategories`)
+    api
+      .get(`/api/souscategories`)
       .then((res) => {
         setSousCategories(Array.isArray(res.data) ? res.data : []);
       })
       .catch((err) => console.log(err));
 
-    axios
-      .get(`${API_URL}/api/marque`)
+    api
+      .get(`/api/marque`)
       .then((res) => {
         setMarques(Array.isArray(res.data) ? res.data : []);
       })
@@ -38,56 +40,58 @@ const FormulaireProduit = ({ onSubmitSuccess }) => {
 
   // ================= SUBMIT =================
   const handleSubmit = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    if (
-      !nom ||
-      !prix ||
-      !description ||
-      !selectedSousCategorie ||
-      !selectedMarque
-    ) {
-      setError("Remplis tous les champs !");
-      return;
+  const token = localStorage.getItem("token");
+
+  if (
+    !nom ||
+    !prix ||
+    !description ||
+    !selectedSousCategorie ||
+    !selectedMarque
+  ) {
+    setError("Remplis tous les champs !");
+    return;
+  }
+
+  try {
+    const formData = new FormData();
+
+    formData.append("nom", nom);
+    formData.append("prix", prix);
+    formData.append("description", description);
+    formData.append("sousCategorieId", selectedSousCategorie);
+    formData.append("marqueId", selectedMarque);
+
+    if (image) {
+      formData.append("image", image);
     }
 
-    try {
-      const formData = new FormData();
+    await api.post(`/api/produitss`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
-      formData.append("nom", nom);
-      formData.append("prix", prix);
-      formData.append("description", description);
-      formData.append("sousCategorieId", selectedSousCategorie);
-      formData.append("marqueId", selectedMarque);
+    alert("Produit ajouté !");
 
-      if (image) {
-        formData.append("image", image);
-      }
+    setNom("");
+    setPrix("");
+    setDescription("");
+    setImage(null);
+    setSelectedSousCategorie("");
+    setSelectedMarque("");
+    setError("");
 
-      await axios.post(`${API_URL}/api/produitss`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+    onSubmitSuccess && onSubmitSuccess();
 
-      alert("Produit ajouté !");
-
-      // RESET
-      setNom("");
-      setPrix("");
-      setDescription("");
-      setImage(null);
-      setSelectedSousCategorie("");
-      setSelectedMarque("");
-      setError("");
-
-      onSubmitSuccess && onSubmitSuccess();
-
-    } catch (err) {
-      console.log(err);
-      setError("Erreur lors de l'envoi");
-    }
-  };
+  } catch (err) {
+    console.log(err);
+    setError("Erreur lors de l'envoi");
+  }
+};
 
   return (
     <div className="bg-white p-6 rounded-xl w-[400px] shadow">

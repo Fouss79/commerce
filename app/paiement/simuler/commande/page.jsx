@@ -2,7 +2,7 @@
 
 import { useSearchParams, useRouter } from "next/navigation";
 import { useState } from "react";
-import axios from "axios";
+import api from "../../../../lib/api";
 
 export default function PaiementSimulePage() {
   const searchParams = useSearchParams();
@@ -18,7 +18,7 @@ export default function PaiementSimulePage() {
   const handleSuccess = async () => {
     setLoading(true);
 
-    await axios.post("http://localhost:8080/api/paiement/callback", {
+    await api.post("/api/paiement/callback", {
       transactionId,
       status: "SUCCESS",
       commandeId,
@@ -33,7 +33,7 @@ export default function PaiementSimulePage() {
   const handleFail = async () => {
     setLoading(true);
 
-    await axios.post("http://localhost:8080/api/paiement/callback", {
+    await api.post("/api/paiement/callback", {
       transactionId,
       status: "FAILED",
       commandeId,

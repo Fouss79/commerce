@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
+import api from '../../../../lib/api';
 
 
 const Form = ({onSubmitSuccess}) => {
@@ -12,7 +13,7 @@ const Form = ({onSubmitSuccess}) => {
   const { id } = useParams();
 
   // Fonction pour sauvegarder la catégorie
-  const saveCategorie = (e) => {
+  const saveCategorie = (e) => {s
     e.preventDefault();
     
     // Créer un objet FormData pour envoyer les données en multipart
@@ -24,9 +25,9 @@ const Form = ({onSubmitSuccess}) => {
     }
 
     // Requête POST ou PUT selon le contexte (création ou mise à jour)
-    const url = id ? `http://localhost:8080/api/categorie/${id}` : 'http://localhost:8080/api/categorie';
+    const url = id ? `/api/categorie/${id}` : '/api/categorie';
 
-    axios({
+    api({
       method: id ? 'put' : 'post',
       url: url,
       data: formData,
@@ -46,7 +47,7 @@ const Form = ({onSubmitSuccess}) => {
 
   useEffect(() => {
     if (id) {
-      axios.get(`http://localhost:8080/api/categorie/${id}`)
+      api.get(`/api/categorie/${id}`)
         .then((response) => {
           setNom(response.data.nom);
           setDescription(response.data.description);

@@ -37,7 +37,9 @@ function LayoutContent({ children }) {
     pathname === "/register" ||
     pathname === "/forgot-password";
 
-
+const hideFooter =
+  pathname.startsWith("/Vendeur") ||
+  pathname.startsWith("/Client");
 
 
   return (
@@ -57,7 +59,7 @@ function LayoutContent({ children }) {
         <CategorieMenu />
         <ScreenRecorder />
       </div>
- {!hideLayout &&<footer className="relative mt-16 overflow-hidden bg-gradient-to-br from-[#063c28] via-[#0a5a3d] to-[#0d6b49] text-white">
+ {!hideLayout && !hideFooter &&<footer className="relative mt-16 overflow-hidden bg-gradient-to-br from-[#063c28] via-[#0a5a3d] to-[#0d6b49] text-white">
   {/* Décorations de fond */}
   <div className="absolute -top-20 -left-20 w-72 h-72 bg-yellow-400/10 rounded-full blur-3xl"></div>
   <div className="absolute -bottom-20 -right-20 w-72 h-72 bg-green-300/10 rounded-full blur-3xl"></div>
@@ -67,7 +69,7 @@ function LayoutContent({ children }) {
       {/* LOGO + DESCRIPTION */}
       <div>
         <h2 className="text-3xl font-extrabold mb-4 tracking-wide">
-          Mali<span className="text-yellow-400">SUGU</span>
+          Mali<span className="text-yellow-600">SUGU</span>
         </h2>
 
         <p className="text-green-100 leading-relaxed text-sm md:text-base">
@@ -91,27 +93,27 @@ function LayoutContent({ children }) {
 
       {/* PRODUIT */}
       <div>
-        <h3 className="text-lg font-semibold mb-4 text-yellow-400">
+        <h3 className="text-lg font-semibold mb-4 text-yellow-600">
           Produit
         </h3>
         <ul className="space-y-3 text-green-100 text-sm">
           <li>
-            <a href="#features" className="hover:text-yellow-400 transition">
+            <a href="#features" className="hover:text-yellow-600 transition">
               Fonctionnalités
             </a>
           </li>
           <li>
-            <a href="#pricing" className="hover:text-yellow-400 transition">
+            <a href="#pricing" className="hover:text-yellow-600 transition">
               Tarifs
             </a>
           </li>
           <li>
-            <a href="#" className="hover:text-yellow-400 transition">
+            <a href="#" className="hover:text-yellow-600 transition">
               Démo
             </a>
           </li>
           <li>
-            <a href="#" className="hover:text-yellow-400 transition">
+            <a href="#" className="hover:text-yellow-600 transition">
               Nouveautés
             </a>
           </li>
@@ -120,7 +122,7 @@ function LayoutContent({ children }) {
 
       {/* SUPPORT */}
       <div>
-        <h3 className="text-lg font-semibold mb-4 text-yellow-400">
+        <h3 className="text-lg font-semibold mb-4 text-yellow-600">
           Support
         </h3>
         <ul className="space-y-3 text-green-100 text-sm">
@@ -149,7 +151,7 @@ function LayoutContent({ children }) {
 
       {/* CALL TO ACTION */}
       <div>
-        <h3 className="text-lg font-semibold mb-4 text-yellow-400">
+        <h3 className="text-lg font-semibold mb-4 text-yellow-600">
           Commencer
         </h3>
 
@@ -176,17 +178,17 @@ function LayoutContent({ children }) {
     <div className="mt-12 pt-6 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-green-100">
       <p>
         © {new Date().getFullYear()}{" "}
-        <span className="font-semibold text-yellow-400">
+        <span className="font-semibold text-yellow-600">
           MaliSugu
         </span>{" "}
         — Tous droits réservés.
       </p>
 
       <div className="flex gap-6">
-        <a href="#" className="hover:text-yellow-400 transition">
+        <a href="#" className="hover:text-yellow-600 transition">
           Conditions d’utilisation
         </a>
-        <a href="#" className="hover:text-yellow-400 transition">
+        <a href="#" className="hover:text-yellow-600 transition">
           Confidentialité
         </a>
       </div>

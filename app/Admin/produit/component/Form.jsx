@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import SelectCategory from './SelectCategory'; // Assurez-vous d'importer le composant
+import api from '../../../../lib/api';
 
 const Form = () => {
   const [selectedImage, setSelectedImage] = useState(null);  
@@ -51,8 +52,8 @@ const Form = () => {
 
     // Requête POST ou PUT selon le contexte (création ou mise à jour)
     const url = id 
-      ? `http://localhost:8080/api/produit/${id}` 
-      : 'http://localhost:8080/api/produit';
+      ? `/api/produit/${id}` 
+      : '/api/produit';
 
     axios({
       method: id ? 'put' : 'post',
@@ -72,7 +73,7 @@ const Form = () => {
 
   useEffect(() => {
     if (id) {
-      axios.get(`http://localhost:8080/api/produit/${id}`)
+      api.get(`/api/produit/${id}`)
         .then((response) => {
           setNom(response.data.nom);
           setPrix(response.data.prix);

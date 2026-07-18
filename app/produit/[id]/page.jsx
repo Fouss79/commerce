@@ -8,6 +8,7 @@ import Header from '../../Admin/Component/Header';
 import { useState,useEffect } from 'react';
 import Breadcrumb from './Component/Breadcrumb';
 import axios from 'axios';
+import api from '../../../lib/api';
 
 const Page = () => {
     const { id } = useParams();
@@ -27,13 +28,13 @@ const Page = () => {
     useEffect(() => {
        const fetchData = async () => {
          try {
-           const res = await axios.get(`${API_URL}/api/produitss/${id}`);
+           const res = await api.get(`/api/produitss/${id}`);
            const prod = res.data;
    
            setProduit(prod);
    
-           const varRes = await axios.get(
-             `${API_URL}/api/varianteimage/produit/${id}`
+           const varRes = await api.get(
+             `/api/varianteimage/produit/${id}`
            );
    
            const vars = varRes.data || [];

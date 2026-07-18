@@ -26,6 +26,13 @@ const Header = () => {
   VENDEUR: "/Vendeur",
   CLIENT: "/Client",
 };
+  
+
+
+const handleLogout = () => {
+  logout();
+  router.push("/");
+};
 
 const dashboardLink = dashboardLinkMap[user?.role] || "/User";
   const total =
@@ -89,7 +96,7 @@ const dashboardLink = dashboardLinkMap[user?.role] || "/User";
         <span className="text-white font-bold text-2xl tracking-wide">
           Mali
         </span>
-        <span className="text-yellow-400 font-bold text-2xl tracking-wide">
+        <span className="text-yellow-600 font-bold text-2xl tracking-wide">
           Sugu
         </span>
 
@@ -119,7 +126,7 @@ const dashboardLink = dashboardLinkMap[user?.role] || "/User";
         onChange={(e) => setSearch(e.target.value)}
         placeholder="Rechercher un produit, une marque..."
         className="
-          flex-1 px-16 py-2
+          flex-1 px-16 py-1
           outline-none
           text-gray-700
           placeholder-gray-400
@@ -130,7 +137,7 @@ const dashboardLink = dashboardLinkMap[user?.role] || "/User";
         type="submit"
         className="
            text-[#063c28]
-          px-4 py-2 bg-yellow-400
+          px-4 py-2 bg-yellow-600
           hover:bg-yellow-300
           transition-all duration-300
           font-semibold
@@ -174,7 +181,7 @@ const dashboardLink = dashboardLinkMap[user?.role] || "/User";
           <span
             className="
               absolute -top-1 -right-1
-              bg-yellow-400 text-[#063c28]
+              bg-yellow-600 text-[#063c28]
               text-xs font-bold
               min-w-[22px] h-[22px]
               px-1 flex items-center justify-center
@@ -207,7 +214,7 @@ const dashboardLink = dashboardLinkMap[user?.role] || "/User";
 
           {/* LOGOUT - quasiment collé au bord droit */}
           <button
-            onClick={logout}
+            onClick={handleLogout}
             className="
               p-3 rounded-full
               bg-red-500/90 text-white
@@ -225,7 +232,7 @@ const dashboardLink = dashboardLinkMap[user?.role] || "/User";
           href="/login"
           className="
             p-3 rounded-full
-            bg-yellow-400 text-[#063c28]
+            bg-yellow-600 text-[#063c28]
             shadow-lg
             hover:bg-yellow-300
             hover:scale-110
@@ -253,7 +260,7 @@ const dashboardLink = dashboardLinkMap[user?.role] || "/User";
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Rechercher..."
             className="
-              flex-1 px-4 py-3
+              flex-1 px-4 py-2
               outline-none
               text-gray-700
             "
@@ -261,8 +268,8 @@ const dashboardLink = dashboardLinkMap[user?.role] || "/User";
 
           <button
             type="submit"
-            className="
-              bg-yellow-400 text-[#063c28]
+            className="S
+              bg-yellow-600 text-[#063c28]
               px-4 py-3
               hover:bg-yellow-300
               transition

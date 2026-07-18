@@ -3,41 +3,38 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams } from "next/navigation";
+import api from "../../../lib/api";
 
-const FormSousCategorie = ({ onSubmitSuccess }) => {
+const FormSousCategorie = () => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [nom, setNom] = useState("");
   const [description, setDescription] = useState("");
-
   const [categorieId, setCategorieId] = useState("");
   const [categories, setCategories] = useState([]);
 
   const params = useParams();
   const id = params?.id;
 
-  // ================= LOAD CATEGORIES =================
   useEffect(() => {
-    axios
-      .get("http://localhost:8080/api/categoriee")
+    api
+      .get("/api/categoriee")
       .then((res) => setCategories(res.data))
-      .catch((err) => console.log(err));
+      .catch(console.log);
   }, []);
 
-  // ================= LOAD (UPDATE) =================
   useEffect(() => {
     if (!id) return;
 
-    axios
-      .get(`http://localhost:8080/api/souscategories/${id}`)
+    api
+      .get(`/api/souscategories/${id}`)
       .then((res) => {
         setNom(res.data.nom || "");
         setDescription(res.data.description || "");
         setCategorieId(res.data.categorieId || "");
       })
-      .catch((err) => console.log(err));
+      .catch(console.log);
   }, [id]);
 
-  // ================= SAVE =================
   const saveSousCategorie = (e) => {
     e.preventDefault();
 
@@ -51,29 +48,27 @@ const FormSousCategorie = ({ onSubmitSuccess }) => {
     }
 
     const url = id
-      ? `http://localhost:8080/api/souscategories/${id}`
-      : "http://localhost:8080/api/souscategories";
+      ? `/api/souscategories/${id}`
+      : "/api/souscategories";
 
-    axios({
+    api({
       method: id ? "put" : "post",
       url,
       data: formData,
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
+      headers: { "Content-Type": "multipart/form-data" },
     })
       .then((res) => {
         console.log(res.data);
 
-        if (onSubmitSuccess) {
-          onSubmitSuccess();
-        }
-      })
-      .catch((err) => console.log(err));
-  };
+        // reset form après succès
+        setNom("");
+        setDescription("");
+        setCategorieId("");
+        setSelectedImage(null);
 
-  const handleImageChange = (e) => {
-    setSelectedImage(e.target.files[0]);
+        alert("Succès !");
+      })
+      .catch(console.log);
   };
 
   return (
@@ -82,8 +77,7 @@ const FormSousCategorie = ({ onSubmitSuccess }) => {
         {id ? "Mettre à jour" : "Créer"} une sous-catégorie
       </h1>
 
-      <form className="flex flex-col gap-3" onSubmit={saveSousCategorie}>
-        {/* IMAGE */}
+      <form onSubmit={saveSousCategorie} className="flex flex-col gap-3">
         <label>Image</label>
 
         {selectedImage && (
@@ -94,35 +88,29 @@ const FormSousCategorie = ({ onSubmitSuccess }) => {
           />
         )}
 
-        <input type="file" onChange={handleImageChange} />
+        <input type="file" onChange={(e) => setSelectedImage(e.target.files[0])} />
 
-        {/* NOM */}
         <label>Nom</label>
         <input
-          type="text"
           value={nom}
           onChange={(e) => setNom(e.target.value)}
-          className="px-4 py-2 border rounded"
+          className="border p-2 rounded"
         />
 
-        {/* DESCRIPTION */}
         <label>Description</label>
         <input
-          type="text"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
-          className="px-4 py-2 border rounded"
+          className="border p-2 rounded"
         />
 
-        {/* CATEGORIE */}
         <label>Catégorie</label>
         <select
           value={categorieId}
           onChange={(e) => setCategorieId(e.target.value)}
-          className="px-4 py-2 border rounded"
+          className="border p-2 rounded"
         >
-          <option value="">-- Choisir une catégorie --</option>
-
+          <option value="">-- Choisir --</option>
           {categories.map((cat) => (
             <option key={cat.id} value={cat.id}>
               {cat.nom}
@@ -130,7 +118,6 @@ const FormSousCategorie = ({ onSubmitSuccess }) => {
           ))}
         </select>
 
-        {/* BUTTON */}
         <button className="bg-[#15878f] text-white py-2 rounded">
           {id ? "Mettre à jour" : "Ajouter"}
         </button>

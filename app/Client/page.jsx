@@ -9,6 +9,7 @@ import {
   CheckCircle,
   Clock,
 } from "lucide-react";
+import api from "../../lib/api";
 
 export default function DashboardClient() {
   const [user, setUser] = useState(null);
@@ -25,8 +26,8 @@ export default function DashboardClient() {
 
   const fetchData = async (userId) => {
     try {
-      const res = await axios.get(
-        `http://localhost:8080/api/commandes/user/${userId}`
+      const res = await api.get(
+        `/api/commandes/user/${userId}`
       );
       setCommandes(res.data);
     } catch (err) {

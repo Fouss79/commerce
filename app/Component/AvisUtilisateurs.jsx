@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { motion } from "framer-motion";
+import api from "../../lib/api";
 import {
   Star,
   Quote,
@@ -16,13 +17,18 @@ export default function AvisUtilisateurs() {
   const [loading, setLoading] = useState(true);
 
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
+  
+
+console.log("API_URL =", API_URL);
 
   // ================= LOAD AVIS =================
   useEffect(() => {
     const fetchAvis = async () => {
       try {
-        const res = await axios.get(`${API_URL}/api/avis`);
+        const res = await api.get("/api/avis");
         setAvis(res.data || []);
+        
+       console.log("LOGIN RESPONSE =", res.data);
       } catch (err) {
         console.error("Erreur chargement avis", err);
       } finally {

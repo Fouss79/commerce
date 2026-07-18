@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import axios from "axios";
+import api from "../../../../lib/api";
 
 const AvisSection = ({ produitId, utilisateurId }) => {
   const [avis, setAvis] = useState([]);
@@ -18,8 +19,8 @@ const AvisSection = ({ produitId, utilisateurId }) => {
 
     const fetchAvis = async () => {
       try {
-        const res = await axios.get(
-          `${API_URL}/api/avis/produit/${produitId}`
+        const res = await api.get(
+          `/api/avis/produit/${produitId}`
         );
 
         setAvis(Array.isArray(res.data) ? res.data : []);
@@ -44,8 +45,8 @@ const AvisSection = ({ produitId, utilisateurId }) => {
     }
 
     try {
-      await axios.post(
-        `${API_URL}/api/avis/produit/${produitId}`,
+      await api.post(
+        `/api/avis/produit/${produitId}`,
         {
           note,
           commentaire,

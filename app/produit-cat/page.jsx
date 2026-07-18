@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { useSearchParams } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
@@ -10,6 +9,7 @@ import ProductItem from "../Admin/produit/component/ProductItems";
 import Carousel from "../Component/Carousel";
 import MegaMenu from "../Component/MegaMenu";
 import Menusouscat from "../Component/Menusouscat";
+import api from "../../lib/api";
 
 const PageProduits = () => {
   const searchParams = useSearchParams();
@@ -44,8 +44,8 @@ const PageProduits = () => {
     setLoading(true);
 
     // Charger tous les produits
-    axios
-      .get(`${API_URL}/api/produitss`)
+    api
+      .get(`/api/produitss`)
       .then((res) => {
         let produitsFiltres = res.data.filter((p) => {
           // Filtrer d'abord par catégorie
@@ -77,8 +77,8 @@ const PageProduits = () => {
       });
 
     // Charger les marques
-    axios
-      .get(`${API_URL}/api/marque`)
+    api
+      .get(`/api/marque`)
       .then((res) => {
         setMarques(res.data);
       })
@@ -115,62 +115,10 @@ const PageProduits = () => {
 
   return (
     <div>
-         <section className="relative flex flex-col md:flex-row items-center mt-20 overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-white via-green-50 to-yellow-50 shadow-2xl border border-green-100">
-  
-  {/* Décoration de fond */}
-  <div className="absolute -top-20 -left-20 w-72 h-72 bg-green-200/20 rounded-full blur-3xl"></div>
-  <div className="absolute -bottom-20 -right-20 w-72 h-72 bg-yellow-200/30 rounded-full blur-3xl"></div>
+       
 
-  {/* TEXTE */}
-  <div className="relative z-10 w-full md:w-1/2 h-auto md:h-[500px] p-8 md:p-16 flex flex-col justify-center">
-    
-    {/* Badge */}
-    <span className="inline-block w-fit px-4 py-2 mb-6 text-sm font-semibold text-green-800 bg-green-100 rounded-full shadow-sm">
-      Marketplace 100% Malien
-    </span>
-
-    {/* Titre */}
-    <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-6 leading-tight text-[#063c28]">
-      La satisfaction de nos clients est notre{" "}
-      <span className="text-yellow-500">priorité</span>
-    </h2>
-
-    
-
-    {/* Boutons */}
-    <div className="flex gap-4 flex-wrap mt-20">
-      <a href="/home/produit">
-        <button className="px-8 py-4 rounded-2xl bg-[#063c28] hover:bg-[#0a5a3d] text-white font-semibold shadow-xl hover:scale-105 transition-all duration-300">
-          Voir les produits
-        </button>
-      </a>
-
-      <a href="/dashboard">
-        <button className="px-8 py-4 rounded-2xl border-2 border-yellow-400 text-[#063c28] font-semibold bg-white hover:bg-yellow-50 shadow-md hover:scale-105 transition-all duration-300">
-          Vendre maintenant
-        </button>
-      </a>
-    </div>
-  </div>
-
-  {/* IMAGE */}
-  <div className="relative z-10 w-full md:w-1/2 h-[320px] md:h-[500px] flex items-center justify-center p-6 md:p-10">
-    
-    {/* Halo décoratif */}
-    <div className="absolute w-80 h-80 bg-gradient-to-br from-green-200/40 to-yellow-200/40 rounded-full blur-3xl"></div>
-
-    {/* Image principale */}
-    <img
-      src="/fem2.png"
-      alt="MaliSugu"
-      className="relative z-10 w-[75%] md:w-[80%] max-h-full object-contain drop-shadow-[0_25px_50px_rgba(0,0,0,0.25)] hover:scale-105 transition-transform duration-700"
-    />
-
-    {/* Overlay subtil */}
-    <div className="absolute inset-0 bg-gradient-to-l from-green-500/10 to-transparent"></div>
-  </div>
-</section>
-
+         <Carousel/>
+     
            <div className="mt-4"><MegaMenu/></div>
       
       <Menusouscat />

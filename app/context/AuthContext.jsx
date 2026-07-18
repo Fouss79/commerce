@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useEffect, useState } from "react";
 import axios from "axios";
+import api from "../../lib/api";
 
 const AuthContext = createContext();
 
@@ -9,6 +10,7 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
+  const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
   // 🔥 RESTORE SESSION AU REFRESH
   useEffect(() => {
@@ -25,12 +27,16 @@ export const AuthProvider = ({ children }) => {
 
   // 🔥 LOGIN
   const login = async (email, password) => {
-    const res = await axios.post("http://localhost:8080/api/auth/login", {
+    
+    const res = await axios.post(`${API_URL}/api/auth/login`, {
       email,
       password,
     });
 
     const data = res.data;
+    
+
+console.log("LOGIN RESPONSE =", data);
 
    const userData = {
   id: data.id,
@@ -45,7 +51,7 @@ export const AuthProvider = ({ children }) => {
     // 🔐 SAVE
     localStorage.setItem("token", data.token);
     localStorage.setItem("user", JSON.stringify(userData));
-
+      console.log("TOKEN =", localStorage.getItem("token"));
     setUser(userData);
     setIsAuthenticated(true);
 

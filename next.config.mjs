@@ -1,16 +1,19 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    // Désactiver complètement les Dev Tools UI de Next.js
-    devtools: false,
-  
-    // Désactiver les indicateurs de build (facultatif)
-    devIndicators: false,
-  
-    // Autres options si tu veux les garder ici
-    experimental: {
-      serverActions: true, // facultatif selon ton usage
-    },
-  };
-  
-  export default nextConfig;
-  
+  reactStrictMode: true,
+
+  images: {
+    remotePatterns: [
+      {
+        protocol: "http",
+        hostname: "localhost",
+      },
+      {
+        protocol: "http",
+        hostname: "127.0.0.1",
+      },
+    ],
+  },
+};
+
+export default nextConfig;

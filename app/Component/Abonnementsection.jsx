@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import axios from "axios";
+import api from "../../lib/api";
 import {
   Crown,
   Sparkles,
@@ -10,6 +10,7 @@ import {
   CheckCircle,
   ArrowRight,
 } from "lucide-react";
+
 
 export default function AbonnementSection() {
   const API_URL =
@@ -97,7 +98,7 @@ export default function AbonnementSection() {
   useEffect(() => {
     const fetchPlans = async () => {
       try {
-        const res = await axios.get(
+        const res = await api.get(
           `${API_URL}/api/plans`
         );
 

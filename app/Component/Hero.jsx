@@ -40,7 +40,7 @@ export default function Hero() {
         </SwiperSlide>
 
         {/* SLIDE 2 */}
-        <SwiperSlide>
+        <SwiperSlide>,,kk
           <div className="relative w-full h-[300px] md:h-[420px]">
             <Image
               src="/slide2.jpg"

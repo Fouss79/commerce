@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useSearchParams, useRouter } from "next/navigation";
 import { CheckCircle, XCircle, Loader2 } from "lucide-react";
+import api from "../../../../lib/api";
 
 export default function PaiementSimulation() {
   const searchParams = useSearchParams();
@@ -27,8 +28,8 @@ export default function PaiementSimulation() {
     setLoading(true);
 
     try {
-      await axios.post(
-        `${API_URL}/api/abonnement/webhook`,
+      await api.post(
+        `/api/abonnement/webhook`,
         {
           abonnementId,
           transactionId,
@@ -53,8 +54,8 @@ export default function PaiementSimulation() {
     setLoading(true);
 
     try {
-      await axios.post(
-        `${API_URL}/api/paiement/webhook/fail`,
+      await api.post(
+        `/api/paiement/webhook/fail`,
         {
           abonnementId,
           transactionId,

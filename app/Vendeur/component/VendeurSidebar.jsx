@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   LayoutDashboard,
   Package,
@@ -10,37 +10,50 @@ import {
   User,
   LogOut,
 } from "lucide-react";
+import { useAuth } from "../../context/AuthContext";
 
 const menuItems = [
   {
     label: "Tableau de bord",
-    href: "/Client",
+    href: "/Vendeur",
     icon: LayoutDashboard,
   },
   {
+    label: "Mes produits",
+    href: "/Vendeur/produit",
+    icon: Package,
+  },
+  {
     label: "Mes commandes",
-    href: "/Client/commandes",
+    href: "/Vendeur/commandes",
     icon: Package,
   },
   {
     label: "Mes favoris",
-    href: "/Client/favoris",
+    href: "/Vendeur/favoris",
     icon: Heart,
   },
   {
     label: "Mes adresses",
-    href: "/Client/adresses",
+    href: "/Vendeur/adresses",
     icon: MapPin,
   },
   {
     label: "Mon profil",
-    href: "/Client/profil",
+    href: "/Vendeur/profil",
     icon: User,
   },
 ];
 
-export default function ClientSidebar() {
+export default function VendeurSidebar() {
   const pathname = usePathname();
+  const router = useRouter();
+  const { logout } = useAuth();
+
+  const handleLogout = () => {
+    logout?.();
+    router.push("/login");
+  };
 
   return (
     <aside className="w-full lg:w-72 bg-white rounded-3xl shadow-xl p-6 h-fit lg:sticky lg:top-24">
@@ -51,8 +64,11 @@ export default function ClientSidebar() {
       <nav className="space-y-2">
         {menuItems.map((item) => {
           const Icon = item.icon;
+
           const active =
-            pathname === item.href 
+            pathname === item.href ||
+            (item.href !== "/Vendeur" &&
+              pathname.startsWith(item.href + "/"));
 
           return (
             <Link
@@ -72,6 +88,7 @@ export default function ClientSidebar() {
       </nav>
 
       <button
+        onClick={handleLogout}
         className="mt-8 w-full flex items-center justify-center gap-2 px-4 py-3 rounded-2xl border border-red-200 text-red-600 hover:bg-red-50 transition"
       >
         <LogOut size={18} />

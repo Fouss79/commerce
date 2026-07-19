@@ -109,7 +109,7 @@ const dashboardLink = dashboardLinkMap[user?.role] || "/User";
     {/* BARRE DE RECHERCHE */}
    
     {/* RIGHT SIDE - poussé complètement à droite */}
-    <div className="flex items-center gap-4 md:gap-6 shrink-0 ml-auto">
+    <div className="flex items-center gap-2 md:gap-6 shrink-0 ml-auto">
        <form
       onSubmit={handleSearch}
       className="
@@ -195,21 +195,22 @@ const dashboardLink = dashboardLinkMap[user?.role] || "/User";
 
       {/* AUTH */}
       {isAuthenticated ? (
-        <div className="flex items-center gap-3">
-          {/* Dashboard */}
+        <div className="flex items-center gap-2 md:gap-3">
+          {/* Dashboard / Compte utilisateur - visible aussi sur mobile (icône seule) */}
           <Link
             href={dashboardLink}
             className="
-              hidden md:flex items-center gap-2
+              flex items-center gap-2
               bg-white/10 backdrop-blur-md
-              px-4 py-2 rounded-full
+              px-3 md:px-4 py-2 md:py-2 rounded-full
               text-white font-semibold
               border border-white/10
               hover:bg-white/20
               transition-all duration-300
             "
           >
-            👤 {user?.nom}
+            <span aria-hidden="true">👤</span>
+            <span className="hidden md:inline">{user?.nom}</span>
           </Link>
 
           {/* LOGOUT - quasiment collé au bord droit */}
@@ -268,7 +269,7 @@ const dashboardLink = dashboardLinkMap[user?.role] || "/User";
 
           <button
             type="submit"
-            className="S
+            className="
               bg-yellow-600 text-[#063c28]
               px-4 py-3
               hover:bg-yellow-300

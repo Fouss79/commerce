@@ -219,6 +219,47 @@ const prevSlide = () => {
             border-radius: 16px;
           }
         }
+
+        /* Hero responsive */
+        .hero-grid {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 60px;
+          align-items: center;
+          width: 100%;
+          max-width: 1280px;
+          margin: 0 auto;
+          padding: 120px 40px 80px;
+        }
+        .hero-image-wrap img {
+          width: 85%;
+          max-height: 520px;
+        }
+        @media (max-width: 900px) {
+          .hero-grid {
+            grid-template-columns: 1fr;
+            gap: 32px;
+            padding: 100px 24px 60px;
+            text-align: center;
+          }
+          .hero-image-wrap {
+            order: -1;
+          }
+          .hero-image-wrap img {
+            width: 65%;
+            max-height: 320px;
+            margin: 0 auto;
+          }
+        }
+        @media (max-width: 480px) {
+          .hero-grid {
+            padding: 90px 16px 48px;
+          }
+          .hero-image-wrap img {
+            width: 75%;
+            max-height: 260px;
+          }
+        }
       `}</style>
       
   
@@ -250,11 +291,7 @@ const prevSlide = () => {
           pointerEvents: "none", opacity: 0.5,
         }} />
 
-        <div style={{
-          maxWidth: 1280, margin: "0 auto", padding: "120px 40px 80px",
-          display: "grid", gridTemplateColumns: "1fr 1fr", gap: 60,
-          alignItems: "center", width: "100%",
-        }}>
+        <div className="hero-grid">
           {/* Texte */}
           <motion.div
             initial={{ opacity: 0, x: -40 }}
@@ -326,6 +363,7 @@ const prevSlide = () => {
 
           {/* Image */}
           <motion.div
+            className="hero-image-wrap"
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.9, ease: "easeOut", delay: 0.2 }}
@@ -342,7 +380,6 @@ const prevSlide = () => {
               src="/fem3.png" alt="MaliSugu"
               style={{
                 position: "relative", zIndex: 1,
-                width: "85%", maxHeight: 520,
                 objectFit: "contain",
                 filter: "drop-shadow(0 30px 60px rgba(0,0,0,0.4))",
               }}

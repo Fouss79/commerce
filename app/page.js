@@ -239,7 +239,7 @@ const prevSlide = () => {
           .hero-grid {
             grid-template-columns: 1fr;
             gap: 32px;
-            padding: 100px 24px 60px;
+            padding: 150px 24px 60px;
             text-align: center;
           }
           .hero-image-wrap {
@@ -253,7 +253,7 @@ const prevSlide = () => {
         }
         @media (max-width: 480px) {
           .hero-grid {
-            padding: 90px 16px 48px;
+            padding: 165px 16px 48px;
           }
           .hero-image-wrap img {
             width: 75%;

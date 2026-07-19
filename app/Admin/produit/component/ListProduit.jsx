@@ -66,7 +66,7 @@ const ListProduit = ({ refreshKey }) => {
 
               {produit.image && (
                 <img 
-                  src={`${API_URL}${produit.image}`} 
+                  src={produit.image} 
                   alt={produit.nom} 
                   className='h-16 rounded' 
                 />

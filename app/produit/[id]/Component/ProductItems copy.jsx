@@ -30,7 +30,7 @@ const ProductItem = ({ product,AjtePagne }) => {
       <Link href={`/produit/${product.id}`}>
         <div className="h-52 flex items-center justify-center bg-gray-50">
           <img
-            src={`${API_URL}${product.image}`}
+            src={product.image}
             alt={product.nom}
             className="h-full object-contain transition-transform duration-300 group-hover:scale-105"
           />

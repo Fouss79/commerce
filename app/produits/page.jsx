@@ -46,7 +46,7 @@ function PageProduitsContent() {
   });
 
   return (
-    <div>
+    <div className="pt-[150px] md:pt-[150px] lg:pt-[100px]">
       <Carousel />
       <MegaMenu />
       <ListProduits />

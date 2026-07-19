@@ -13,7 +13,7 @@ const Form = ({onSubmitSuccess}) => {
   const { id } = useParams();
 
   // Fonction pour sauvegarder la catégorie
-  const saveCategorie = (e) => {s
+  const saveCategorie = (e) => {
     e.preventDefault();
     
     // Créer un objet FormData pour envoyer les données en multipart

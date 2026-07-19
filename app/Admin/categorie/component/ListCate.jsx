@@ -71,7 +71,7 @@ const ListCate = ({ refreshKey }) => {
                 
 
 <img 
-  src={`${API_URL}${categorie.image}`} 
+  src={categorie.image} 
   alt={categorie.nom}
   className="h-auto w-auto object-cover"
 />

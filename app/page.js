@@ -79,13 +79,14 @@ const features = [
 function FeatureCard({ icon, title, desc, delay = 0 }) {
   return (
     <motion.div
+      className="feature-card"
       initial={{ opacity: 0, y: 24 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.5, delay }}
       style={{
         background: "#fff", border: "1px solid #e8f0ea",
-        borderRadius: 20, padding: "28px 24px",
+        borderRadius: 20,
         display: "flex", flexDirection: "column", gap: 12,
         boxShadow: "0 2px 20px rgba(6,60,40,0.05)",
       }}
@@ -189,6 +190,36 @@ const prevSlide = () => {
       
   return (
     <main className="w-full overflow-x-hidden bg-[#f7f3ee]"> 
+
+      {/* Styles responsive pour la grille de features */}
+      <style>{`
+        .features-grid {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 20px;
+        }
+        .feature-card {
+          padding: 28px 24px;
+        }
+        @media (max-width: 768px) {
+          .features-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 14px;
+          }
+          .feature-card {
+            padding: 20px 16px;
+          }
+        }
+        @media (max-width: 420px) {
+          .features-grid {
+            gap: 10px;
+          }
+          .feature-card {
+            padding: 16px 14px;
+            border-radius: 16px;
+          }
+        }
+      `}</style>
       
   
 <section
@@ -369,11 +400,7 @@ const prevSlide = () => {
             </p>
           </motion.div>
 
-          <div style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit,minmax(400px,1fr))",
-            gap: 20,
-          }}>
+          <div className="features-grid">
             {features.map((f) => <FeatureCard key={f.title} {...f} />)}
           </div>
         </div>

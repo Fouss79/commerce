@@ -26,28 +26,28 @@ export const metadata = {
   ],
 
   openGraph: {
-    title: "MaliSugu - Marketplace malienne",
+  title: "MaliSugu - Marketplace malienne",
 
-    description:
-      "Achetez et vendez facilement au Mali avec MaliSugu.",
+  description:
+    "Achetez et vendez facilement au Mali avec MaliSugu.",
 
-    url: "https://commerce-5xy4.vercel.app/imm1.png",
+  url: "https://commerce-5xy4.vercel.app",
 
-    siteName: "MaliSugu",
+  siteName: "MaliSugu",
 
-    locale: "fr_FR",
+  locale: "fr_FR",
 
-    type: "website",
+  type: "website",
 
-    images: [
-      {
-        url: "https://commerce-5xy4.vercel.app/imm1.png",
-        width: 1200,
-        height: 630,
-        alt: "MaliSugu Marketplace",
-      },
-    ],
-  },
+  images: [
+    {
+      url: "https://commerce-5xy4.vercel.app/imm1.png",
+      width: 1200,
+      height: 630,
+      alt: "MaliSugu Marketplace",
+    },
+  ],
+},
 
   twitter: {
     card: "summary_large_image",

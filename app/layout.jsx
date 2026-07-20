@@ -31,7 +31,7 @@ export const metadata = {
     description:
       "Achetez et vendez facilement au Mali avec MaliSugu.",
 
-    url: "https://ton-projet.vercel.app",
+    url: "https://commerce-5xy4.vercel.app/imm1.png",
 
     siteName: "MaliSugu",
 
@@ -41,7 +41,7 @@ export const metadata = {
 
     images: [
       {
-        url: "https://ton-projet.vercel.app/imm1.png",
+        url: "https://commerce-5xy4.vercel.app/imm1.png",
         width: 1200,
         height: 630,
         alt: "MaliSugu Marketplace",

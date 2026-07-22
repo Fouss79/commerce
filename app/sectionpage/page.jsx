@@ -36,7 +36,7 @@ export default function HomePage() {
       const [catRes, prodRes, marqRes, vendusRes, recentsRes] = await Promise.all([
         api.get("/api/categorie").catch(() => ({ data: [] })), // 👈 corrigé (singulier)
         api.get("/api/produitss").catch(() => ({ data: [] })),
-        api.get("/api/marques").catch(() => ({ data: [] })),
+        api.get("/api/marque").catch(() => ({ data: [] })),
         api.get("/api/produitss/plus-vendus?limit=12").catch(() => ({ data: [] })),
         api.get("/api/produitss/recents?limit=12").catch(() => ({ data: [] })),
       ]);

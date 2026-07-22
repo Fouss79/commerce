@@ -495,17 +495,28 @@ export default function ProduitDetail({
   bg-white
   shadow-sm
 ">
-  <div className="
+ <div className="
     w-14 h-14
     rounded-full
     bg-[#063c28]
     text-yellow-400
     font-bold
     flex items-center justify-center
+    overflow-hidden
   ">
-    {produit?.vendeurPrenom?.[0]}
-    {produit?.vendeurNom?.[0]}
-  </div>
+  {produit?.vendeurImage ? (
+    <img
+      src={produit?.vendeurImage}
+      alt={`${produit?.vendeurPrenom || ""} ${produit?.vendeurNom || ""}`}
+      className="w-full h-full object-cover"
+    />
+  ) : (
+    <>
+      {produit?.vendeurPrenom?.[0]}
+      {produit?.vendeurNom?.[0]}
+    </>
+  )}
+</div>
 
   <div>
     <p className="text-sm text-gray-500">

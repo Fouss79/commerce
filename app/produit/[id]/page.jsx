@@ -30,9 +30,9 @@ const Page = () => {
          try {
            const res = await api.get(`/api/produitss/${id}`);
            const prod = res.data;
-   
+           console.log(prod.vendeurImage);
            setProduit(prod);
-   
+          
            const varRes = await api.get(
              `/api/varianteimage/produit/${id}`
            );

@@ -118,66 +118,78 @@ export default function HomePage() {
       <div className="max-w-7xl mx-auto px-6">
 
         {/* ================= CATÉGORIES POPULAIRES ================= */}
-        <section className="py-14 md:py-20">
-          <div className="flex items-center justify-between mb-8">
-            <div>
-              <p className="text-yellow-600 font-semibold text-sm mb-1">
-                Explorer par catégorie
-              </p>
-              <h2 className="text-2xl md:text-3xl font-extrabold text-[#063c28]">
-                Catégories populaires
-              </h2>
-            </div>
+       {/* ================= CATÉGORIES POPULAIRES ================= */}
+<section className="py-14 md:py-20">
+  <div className="flex items-center justify-between mb-8">
+    <div>
+      <p className="text-yellow-600 font-semibold text-sm mb-1">
+        Explorer par catégorie
+      </p>
+      <h2 className="text-2xl md:text-3xl font-extrabold text-[#063c28]">
+        Catégories populaires
+      </h2>
+    </div>
 
-            <Link
-              href="/categories"
-              className="hidden md:flex items-center gap-1 text-sm font-semibold text-[#063c28] hover:text-yellow-600 transition"
-            >
-              Tout voir <ArrowRight size={16} />
-            </Link>
-          </div>
+    <Link
+      href="/categories"
+      className="hidden md:flex items-center gap-1 text-sm font-semibold text-[#063c28] hover:text-yellow-600 transition"
+    >
+      Tout voir <ArrowRight size={16} />
+    </Link>
+  </div>
 
-          {loading ? (
-            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-              {[...Array(6)].map((_, i) => (
-                <div key={i} className="h-32 bg-gray-100 rounded-3xl animate-pulse" />
-              ))}
+  {loading ? (
+    <div className="flex gap-4 overflow-hidden">
+      {[...Array(6)].map((_, i) => (
+        <div key={i} className="h-32 w-32 shrink-0 bg-gray-100 rounded-3xl animate-pulse" />
+      ))}
+    </div>
+  ) : categories.length === 0 ? (
+    <p className="text-gray-400 text-sm">Aucune catégorie disponible.</p>
+  ) : (
+    <Swiper
+      modules={[Navigation]}
+      spaceBetween={16}
+      slidesPerView={3}
+      breakpoints={{
+        480: { slidesPerView: 4 },
+        768: { slidesPerView: 5 },
+        1024: { slidesPerView: 7 },
+      }}
+      navigation
+      className="!pb-2"
+    >
+      {categories.map((cat) => (
+        <SwiperSlide key={cat.id}>
+          <Link
+            href={`/categories/${cat.id}`}
+            className="
+              group relative flex flex-col items-center justify-center gap-3
+              p-5 rounded-3xl bg-gray-50 border border-gray-100
+              hover:border-[#063c28]/30 hover:shadow-lg hover:-translate-y-1
+              transition-all duration-300
+            "
+          >
+            <div className="w-14 h-14 rounded-2xl bg-[#063c28]/10 flex items-center justify-center overflow-hidden group-hover:bg-yellow-400/20 transition">
+              {cat.image ? (
+                <img
+                  src={cat.image}
+                  alt={cat.nom}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <span className="text-2xl">🛍️</span>
+              )}
             </div>
-          ) : categories.length === 0 ? (
-            <p className="text-gray-400 text-sm">Aucune catégorie disponible.</p>
-          ) : (
-            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-              {categories.slice(0, 12).map((cat) => (
-                <Link
-                  key={cat.id}
-                  href={`/categories/${cat.id}`}
-                  className="
-                    group relative flex flex-col items-center justify-center gap-3
-                    p-5 rounded-3xl bg-gray-50 border border-gray-100
-                    hover:border-[#063c28]/30 hover:shadow-lg hover:-translate-y-1
-                    transition-all duration-300
-                  "
-                >
-                  <div className="w-14 h-14 rounded-2xl bg-[#063c28]/10 flex items-center justify-center overflow-hidden group-hover:bg-yellow-400/20 transition">
-                    {cat.image ? (
-                      <img
-                        src={cat.image}
-                        alt={cat.nom}
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <span className="text-2xl">🛍️</span>
-                    )}
-                  </div>
-                  <span className="text-sm font-semibold text-gray-700 text-center group-hover:text-[#063c28]">
-                    {cat.nom}
-                  </span>
-                </Link>
-              ))}
-            </div>
-          )}
-        </section>
-
+            <span className="text-sm font-semibold text-gray-700 text-center group-hover:text-[#063c28] line-clamp-1">
+              {cat.nom}
+            </span>
+          </Link>
+        </SwiperSlide>
+      ))}
+    </Swiper>
+  )}
+</section>
         {/* ================= PLUS VENDUS ================= */}
         {produitsVendus.length > 0 && (
           <section className="py-6 md:py-10">

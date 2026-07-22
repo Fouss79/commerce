@@ -547,15 +547,7 @@ const prevSlide = () => {
       <div className="bg-white]">
       
     
-      
-      <Scrollpane
-  cartItems={cartItems}
-  isModalOpen={isModalOpen}
-  openModal={openModal}
-  closeModal={closeModal}
-  removeItemFromCart={removeFromCart}
-  Ajoute={Ajoute}
-/>
+     
 </div>
     
       

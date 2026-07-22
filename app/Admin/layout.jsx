@@ -5,6 +5,7 @@ import Sidebar from './Component/Sidebar';
 import Header from './Component/Header';
 import { usePathname } from 'next/navigation';
 import { useCart } from '../context/CartContext';
+import Footer from './Component/Footer';
 const Layout = ({ children }) => {
 
   const {Ajoute, addToCart, cartItems, isModalOpen, removeFromCart, openModal, closeModal } = useCart();
@@ -68,6 +69,7 @@ const handleClickOutside = (event) => {
       <section className='flex-1 flex flex-col min-h-screen'>
         <Header toggleSidebar={toggleSidebar} cartItems={cartItems} />
         <section className='flex-1 bg-[#eff3f4]'>{children}</section>
+        <Footer/>
       </section>
     </main>
   );

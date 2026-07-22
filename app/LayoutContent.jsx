@@ -4,6 +4,7 @@ import CategorieMenu from "./Component/CategorieMenu";
 import Carousel from "./Component/Carousel";
 import ScreenRecorder from "./Component/ScreenRecorder";
 import Header from "./Admin/Component/Header";
+import Footer from "./Admin/Component/Footer";
 import { usePathname } from "next/navigation";
 
 import { useCart } from "./context/CartContext";
@@ -41,9 +42,8 @@ export default function LayoutContent({ children }) {
       </div>
 
       {!hideLayout && !hideFooter && (
-        <footer className="relative mt-16 overflow-hidden bg-gradient-to-br from-[#063c28] via-[#0a5a3d] to-[#0d6b49] text-white">
-          {/* ... tout ton contenu de footer inchangé ... */}
-        </footer>
+      <Footer/>
+        
       )}
     </>
   );

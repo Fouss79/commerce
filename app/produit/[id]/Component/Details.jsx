@@ -10,7 +10,7 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import { motion, AnimatePresence } from "framer-motion";
-
+import Link from "next/link";
 import { useAuth } from "../../../context/AuthContext";
 import { useCart } from "../../../context/CartContext";
 
@@ -495,6 +495,7 @@ export default function ProduitDetail({
   bg-white
   shadow-sm
 ">
+  <Link href={`/boutique/${produit.vendeurId}`} className="flex items-center gap-4 ...">
  <div className="
     w-14 h-14
     rounded-full
@@ -506,7 +507,7 @@ export default function ProduitDetail({
   ">
   {produit?.vendeurImage ? (
     <img
-      src={produit?.vendeurImage}
+      src={produit.vendeurImage}
       alt={`${produit?.vendeurPrenom || ""} ${produit?.vendeurNom || ""}`}
       className="w-full h-full object-cover"
     />
@@ -517,6 +518,7 @@ export default function ProduitDetail({
     </>
   )}
 </div>
+</Link>
 
   <div>
     <p className="text-sm text-gray-500">

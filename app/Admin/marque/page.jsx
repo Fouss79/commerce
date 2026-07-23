@@ -3,19 +3,33 @@
 import { useState } from "react";
 import FormMarque from "./Component/FormMarque";
 
-export default function MarquePage() {
-  const [editData, setEditData] = useState(null);
+import ListeMarques from "./Component/ListeMarques";
 
-  const handleSuccess = () => {
-    // rafraîchir la liste des marques, fermer le formulaire d'édition, etc.
-    setEditData(null);
-  };
+export default function PageMarques() {
+
+  const [editData, setEditData] = useState(null);
+  const [refresh, setRefresh] = useState(false);
 
   return (
-    <div>
-      <FormMarque onSuccess={handleSuccess} editData={editData} />
-      {/* Si vous avez une liste de marques ailleurs, vous pouvez l'afficher ici
-          et appeler setEditData(marque) au clic sur "Modifier" */}
+    <div className="grid lg:grid-cols-3 gap-6">
+
+      <FormMarque
+        editData={editData}
+        onSuccess={() => {
+          setEditData(null);
+          setRefresh(!refresh);
+        }}
+      />
+
+      <div className="lg:col-span-2">
+
+        <ListeMarques
+          refresh={refresh}
+          onEdit={(marque) => setEditData(marque)}
+        />
+
+      </div>
+
     </div>
   );
 }

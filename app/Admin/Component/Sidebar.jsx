@@ -21,15 +21,16 @@ const menuList = [
     link: "/Admin",
     icon: <MdDashboard size={20} />,
   },
-  {
-    nom: "Produits",
-    link: "/Admin/produit",
-    icon: <FaToolbox size={18} />,
-  },
+ 
   {
     nom: "Catégories",
     link: "/Admin/categorie",
     icon: <BiCategory size={20} />,
+  },
+   {
+    nom: "Marque",
+    link: "/Admin/marque",
+    icon: <FaToolbox size={18} />,
   },
   {
     nom: "Collections",

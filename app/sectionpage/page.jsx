@@ -162,7 +162,7 @@ export default function HomePage() {
               {categories.map((cat) => (
                 <SwiperSlide key={cat.id}>
                   <Link
-                    href={`/categories/${cat.id}`}
+                    href={`/categorie/${cat.id}`}
                     className="
                       group relative flex flex-col items-center justify-center gap-3
                       p-5 rounded-3xl bg-gray-50 border border-gray-100

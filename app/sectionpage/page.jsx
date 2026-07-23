@@ -31,30 +31,30 @@ export default function HomePage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-  const fetchData = async () => {
-    try {
-      const [catRes, prodRes, marqRes, vendusRes, recentsRes] = await Promise.all([
-        api.get("/api/categorie").catch(() => ({ data: [] })), // 👈 corrigé (singulier)
-        api.get("/api/produitss").catch(() => ({ data: [] })),
-        api.get("/api/marque").catch(() => ({ data: [] })),
-        api.get("/api/produitss/plus-vendus?limit=12").catch(() => ({ data: [] })),
-        api.get("/api/produitss/recents?limit=12").catch(() => ({ data: [] })),
-      ]);
+    const fetchData = async () => {
+      try {
+        const [catRes, prodRes, marqRes, vendusRes, recentsRes] = await Promise.all([
+          api.get("/api/categorie").catch(() => ({ data: [] })),
+          api.get("/api/produitss").catch(() => ({ data: [] })),
+          api.get("/api/marque").catch(() => ({ data: [] })),
+          api.get("/api/produitss/plus-vendus?limit=12").catch(() => ({ data: [] })),
+          api.get("/api/produitss/recents?limit=12").catch(() => ({ data: [] })),
+        ]);
 
-      setCategories(catRes.data || []);
-      setProduits(prodRes.data || []);
-      setMarques(marqRes.data || []);
-      setProduitsVendus(vendusRes.data || []);
-      setProduitsRecents(recentsRes.data || []);
-    } catch (error) {
-      console.error("Erreur chargement accueil :", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+        setCategories(catRes.data || []);
+        setProduits(prodRes.data || []);
+        setMarques(marqRes.data || []);
+        setProduitsVendus(vendusRes.data || []);
+        setProduitsRecents(recentsRes.data || []);
+      } catch (error) {
+        console.error("Erreur chargement accueil :", error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  fetchData();
-}, []);
+    fetchData();
+  }, []);
 
   const produitsVedette = produits.slice(0, 12);
 
@@ -117,266 +117,220 @@ export default function HomePage() {
 
       <div className="max-w-7xl mx-auto px-6">
 
-        {/* ================= CATÉGORIES POPULAIRES ================= */}
-       {/* ================= CATÉGORIES POPULAIRES ================= */}
-<section className="py-14 md:py-20">
-  <div className="flex items-center justify-between mb-8">
-    <div>
-      <p className="text-yellow-600 font-semibold text-sm mb-1">
-        Explorer par catégorie
-      </p>
-      <h2 className="text-2xl md:text-3xl font-extrabold text-[#063c28]">
-        Catégories populaires
-      </h2>
-    </div>
+        {/* ================= CATÉGORIES POPULAIRES (auto-scroll comme les marques) ================= */}
+        <section className="py-14 md:py-20">
+          <div className="flex items-center justify-between mb-8">
+            <div>
+              <p className="text-yellow-600 font-semibold text-sm mb-1">
+                Explorer par catégorie
+              </p>
+              <h2 className="text-2xl md:text-3xl font-extrabold text-[#063c28]">
+                Catégories populaires
+              </h2>
+            </div>
 
-    <Link
-      href="/categories"
-      className="hidden md:flex items-center gap-1 text-sm font-semibold text-[#063c28] hover:text-yellow-600 transition"
-    >
-      Tout voir <ArrowRight size={16} />
-    </Link>
-  </div>
-
-  {loading ? (
-    <div className="flex gap-4 overflow-hidden">
-      {[...Array(6)].map((_, i) => (
-        <div key={i} className="h-32 w-28 md:w-32 shrink-0 bg-gray-100 rounded-3xl animate-pulse" />
-      ))}
-    </div>
-  ) : categories.length === 0 ? (
-    <p className="text-gray-400 text-sm">Aucune catégorie disponible.</p>
-  ) : (
-    <div
-      className="
-        flex gap-4 overflow-x-auto pb-4
-        snap-x snap-mandatory
-        scrollbar-hide
-        -mx-6 px-6
-      "
-      style={{ scrollBehavior: "smooth" }}
-    >
-      {categories.map((cat) => (
-        <Link
-          key={cat.id}
-          href={`/categories/${cat.id}`}
-          className="
-            shrink-0 snap-start
-            group relative flex flex-col items-center justify-center gap-3
-            w-28 md:w-32 p-5 rounded-3xl bg-gray-50 border border-gray-100
-            hover:border-[#063c28]/30 hover:shadow-lg
-            transition-all duration-300
-            active:scale-95
-          "
-        >
-          <div className="w-14 h-14 rounded-2xl bg-[#063c28]/10 flex items-center justify-center overflow-hidden group-hover:bg-yellow-400/20 transition">
-            {cat.image ? (
-              <img
-                src={cat.image}
-                alt={cat.nom}
-                className="w-full h-full object-cover"
-              />
-            ) : (
-              <span className="text-2xl">🛍️</span>
-            )}
+            <Link
+              href="/categories"
+              className="hidden md:flex items-center gap-1 text-sm font-semibold text-[#063c28] hover:text-yellow-600 transition"
+            >
+              Tout voir <ArrowRight size={16} />
+            </Link>
           </div>
-          <span className="text-sm font-semibold text-gray-700 text-center group-hover:text-[#063c28] line-clamp-1">
-            {cat.nom}
-          </span>
-        </Link>
-      ))}
-    </div>
-  )}
-</section>
-          {/* ================= PLUS VENDUS ================= */}
-{produitsVendus.length > 0 && (
-  <section className="py-6 md:py-10">
-    <div className="flex items-center justify-between mb-8">
-      <div>
-        <p className="text-yellow-600 font-semibold text-sm mb-1 flex items-center gap-2">
-          <Flame size={16} />
-          Tendance
-        </p>
-        <h2 className="text-2xl md:text-3xl font-extrabold text-[#063c28]">
-          Les plus vendus
-        </h2>
-      </div>
 
-      <Link
-        href="/produits?tri=populaire"
-        className="hidden md:flex items-center gap-1 text-sm font-semibold text-[#063c28] hover:text-yellow-600 transition"
-      >
-        Tout voir <ArrowRight size={16} />
-      </Link>
-    </div>
-
-    <div
-      className="
-        flex gap-4 overflow-x-auto pb-4
-        snap-x snap-mandatory
-        scrollbar-hide
-        -mx-6 px-6
-      "
-      style={{ scrollBehavior: "smooth" }}
-    >
-      {produitsVendus.map((p) => (
-        <div
-          key={p.id}
-          className="shrink-0 snap-start w-[45%] sm:w-[30%] md:w-[23%] lg:w-[18%] relative"
-        >
-          <span className="absolute top-3 left-3 z-10 flex items-center gap-1 px-3 py-1 rounded-full bg-yellow-400 text-[#063c28] text-xs font-bold shadow">
-            <Flame size={12} />
-            Best-seller
-          </span>
-          <ProductItem product={p} />
-        </div>
-      ))}
-    </div>
-  </section>
-)}
-
-{/* ================= PLUS RÉCENTS ================= */}
-{produitsRecents.length > 0 && (
-  <section className="py-6 md:py-10">
-    <div className="flex items-center justify-between mb-8">
-      <div>
-        <p className="text-yellow-600 font-semibold text-sm mb-1 flex items-center gap-2">
-          <Clock size={16} />
-          Fraîchement arrivés
-        </p>
-        <h2 className="text-2xl md:text-3xl font-extrabold text-[#063c28]">
-          Nouveautés
-        </h2>
-      </div>
-
-      <Link
-        href="/produits?tri=recent"
-        className="hidden md:flex items-center gap-1 text-sm font-semibold text-[#063c28] hover:text-yellow-600 transition"
-      >
-        Tout voir <ArrowRight size={16} />
-      </Link>
-    </div>
-
-    <div
-      className="
-        flex gap-4 overflow-x-auto pb-4
-        snap-x snap-mandatory
-        scrollbar-hide
-        -mx-6 px-6
-      "
-      style={{ scrollBehavior: "smooth" }}
-    >
-      {produitsRecents.map((p) => (
-        <div
-          key={p.id}
-          className="shrink-0 snap-start w-[45%] sm:w-[30%] md:w-[23%] lg:w-[18%] relative"
-        >
-          <span className="absolute top-3 left-3 z-10 px-3 py-1 rounded-full bg-[#063c28] text-white text-xs font-bold shadow">
-            Nouveau
-          </span>
-          <ProductItem product={p} />
-        </div>
-      ))}
-    </div>
-  </section>
-)}
-
-{/* ================= PRODUITS EN VEDETTE ================= */}
-<section className="py-6 md:py-10">
-  <div className="flex items-center justify-between mb-8">
-    <div>
-      <p className="text-yellow-600 font-semibold text-sm mb-1">
-        Sélection du moment
-      </p>
-      <h2 className="text-2xl md:text-3xl font-extrabold text-[#063c28]">
-        Produits en vedette
-      </h2>
-    </div>
-
-    <Link
-      href="/produits"
-      className="hidden md:flex items-center gap-1 text-sm font-semibold text-[#063c28] hover:text-yellow-600 transition"
-    >
-      Tout voir <ArrowRight size={16} />
-    </Link>
-  </div>
-
-  {loading ? (
-    <div className="flex gap-4 overflow-hidden">
-      {[...Array(6)].map((_, i) => (
-        <div key={i} className="h-64 w-[45%] sm:w-[30%] md:w-[23%] shrink-0 bg-gray-100 rounded-2xl animate-pulse" />
-      ))}
-    </div>
-  ) : produitsVedette.length === 0 ? (
-    <p className="text-gray-400 text-sm">Aucun produit disponible pour le moment.</p>
-  ) : (
-    <div
-      className="
-        flex gap-4 overflow-x-auto pb-4
-        snap-x snap-mandatory
-        scrollbar-hide
-        -mx-6 px-6
-      "
-      style={{ scrollBehavior: "smooth" }}
-    >
-      {produitsVedette.map((p) => (
-        <div key={p.id} className="shrink-0 snap-start w-[45%] sm:w-[30%] md:w-[23%] lg:w-[18%]">
-          <ProductItem product={p} />
-        </div>
-      ))}
-    </div>
-  )}
-</section>
-
-{/* ================= MARQUES PARTENAIRES ================= */}
-{marques.length > 0 && (
-  <section className="py-14 md:py-20">
-    <div className="text-center mb-10">
-      <p className="text-yellow-600 font-semibold text-sm mb-1">
-        Ils nous font confiance
-      </p>
-      <h2 className="text-2xl md:text-3xl font-extrabold text-[#063c28]">
-        Marques partenaires
-      </h2>
-    </div>
-
-    <div
-      className="
-        flex gap-8 overflow-x-auto pb-4
-        snap-x snap-mandatory
-        scrollbar-hide
-        -mx-6 px-6
-      "
-      style={{ scrollBehavior: "smooth" }}
-    >
-      {marques.map((m) => (
-        <div
-          key={m.id}
-          className="
-            shrink-0 snap-start
-            w-24 sm:w-28 md:w-32
-            flex items-center justify-center h-20
-            grayscale hover:grayscale-0
-            transition-all duration-300
-            opacity-70 hover:opacity-100
-          "
-        >
-          {m.image ? (
-            <img
-              src={m.image}
-              alt={m.nom}
-              className="max-h-14 object-contain"
-            />
+          {loading ? (
+            <div className="flex gap-4 overflow-hidden">
+              {[...Array(6)].map((_, i) => (
+                <div key={i} className="h-32 w-28 md:w-32 shrink-0 bg-gray-100 rounded-3xl animate-pulse" />
+              ))}
+            </div>
+          ) : categories.length === 0 ? (
+            <p className="text-gray-400 text-sm">Aucune catégorie disponible.</p>
           ) : (
-            <span className="font-bold text-gray-400 text-sm text-center">{m.nom}</span>
+            <Swiper
+              modules={[Autoplay]}
+              spaceBetween={16}
+              slidesPerView={3}
+              loop={categories.length > 6}
+              autoplay={{ delay: 2000, disableOnInteraction: false }}
+              breakpoints={{
+                480: { slidesPerView: 4 },
+                768: { slidesPerView: 5 },
+                1024: { slidesPerView: 7 },
+              }}
+              className="!pb-2"
+            >
+              {categories.map((cat) => (
+                <SwiperSlide key={cat.id}>
+                  <Link
+                    href={`/categories/${cat.id}`}
+                    className="
+                      group relative flex flex-col items-center justify-center gap-3
+                      p-5 rounded-3xl bg-gray-50 border border-gray-100
+                      hover:border-[#063c28]/30 hover:shadow-lg hover:-translate-y-1
+                      transition-all duration-300
+                    "
+                  >
+                    <div className="w-14 h-14 rounded-2xl bg-[#063c28]/10 flex items-center justify-center overflow-hidden group-hover:bg-yellow-400/20 transition">
+                      {cat.image ? (
+                        <img
+                          src={cat.image}
+                          alt={cat.nom}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <span className="text-2xl">🛍️</span>
+                      )}
+                    </div>
+                    <span className="text-sm font-semibold text-gray-700 text-center group-hover:text-[#063c28] line-clamp-1">
+                      {cat.nom}
+                    </span>
+                  </Link>
+                </SwiperSlide>
+              ))}
+            </Swiper>
           )}
-        </div>
-      ))}
-    </div>
-  </section>
-)}
+        </section>
+
+        {/* ================= PLUS VENDUS ================= */}
+        {produitsVendus.length > 0 && (
+          <section className="py-6 md:py-10">
+            <div className="flex items-center justify-between mb-8">
+              <div>
+                <p className="text-yellow-600 font-semibold text-sm mb-1 flex items-center gap-2">
+                  <Flame size={16} />
+                  Tendance
+                </p>
+                <h2 className="text-2xl md:text-3xl font-extrabold text-[#063c28]">
+                  Les plus vendus
+                </h2>
+              </div>
+
+              <Link
+                href="/produits?tri=populaire"
+                className="hidden md:flex items-center gap-1 text-sm font-semibold text-[#063c28] hover:text-yellow-600 transition"
+              >
+                Tout voir <ArrowRight size={16} />
+              </Link>
+            </div>
+
+            <div
+              className="
+                flex gap-4 overflow-x-auto pb-4
+                snap-x snap-mandatory
+                scrollbar-hide
+                -mx-6 px-6
+              "
+              style={{ scrollBehavior: "smooth" }}
+            >
+              {produitsVendus.map((p) => (
+                <div
+                  key={p.id}
+                  className="shrink-0 snap-start w-[45%] sm:w-[30%] md:w-[23%] lg:w-[18%] relative"
+                >
+                  <span className="absolute top-3 left-3 z-10 flex items-center gap-1 px-3 py-1 rounded-full bg-yellow-400 text-[#063c28] text-xs font-bold shadow">
+                    <Flame size={12} />
+                    Best-seller
+                  </span>
+                  <ProductItem product={p} />
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* ================= PLUS RÉCENTS ================= */}
+        {produitsRecents.length > 0 && (
+          <section className="py-6 md:py-10">
+            <div className="flex items-center justify-between mb-8">
+              <div>
+                <p className="text-yellow-600 font-semibold text-sm mb-1 flex items-center gap-2">
+                  <Clock size={16} />
+                  Fraîchement arrivés
+                </p>
+                <h2 className="text-2xl md:text-3xl font-extrabold text-[#063c28]">
+                  Nouveautés
+                </h2>
+              </div>
+
+              <Link
+                href="/produits?tri=recent"
+                className="hidden md:flex items-center gap-1 text-sm font-semibold text-[#063c28] hover:text-yellow-600 transition"
+              >
+                Tout voir <ArrowRight size={16} />
+              </Link>
+            </div>
+
+            <div
+              className="
+                flex gap-4 overflow-x-auto pb-4
+                snap-x snap-mandatory
+                scrollbar-hide
+                -mx-6 px-6
+              "
+              style={{ scrollBehavior: "smooth" }}
+            >
+              {produitsRecents.map((p) => (
+                <div
+                  key={p.id}
+                  className="shrink-0 snap-start w-[45%] sm:w-[30%] md:w-[23%] lg:w-[18%] relative"
+                >
+                  <span className="absolute top-3 left-3 z-10 px-3 py-1 rounded-full bg-[#063c28] text-white text-xs font-bold shadow">
+                    Nouveau
+                  </span>
+                  <ProductItem product={p} />
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
         {/* ================= PRODUITS EN VEDETTE ================= */}
-        
+        <section className="py-6 md:py-10">
+          <div className="flex items-center justify-between mb-8">
+            <div>
+              <p className="text-yellow-600 font-semibold text-sm mb-1">
+                Sélection du moment
+              </p>
+              <h2 className="text-2xl md:text-3xl font-extrabold text-[#063c28]">
+                Produits en vedette
+              </h2>
+            </div>
+
+            <Link
+              href="/produits"
+              className="hidden md:flex items-center gap-1 text-sm font-semibold text-[#063c28] hover:text-yellow-600 transition"
+            >
+              Tout voir <ArrowRight size={16} />
+            </Link>
+          </div>
+
+          {loading ? (
+            <div className="flex gap-4 overflow-hidden">
+              {[...Array(6)].map((_, i) => (
+                <div key={i} className="h-64 w-[45%] sm:w-[30%] md:w-[23%] shrink-0 bg-gray-100 rounded-2xl animate-pulse" />
+              ))}
+            </div>
+          ) : produitsVedette.length === 0 ? (
+            <p className="text-gray-400 text-sm">Aucun produit disponible pour le moment.</p>
+          ) : (
+            <div
+              className="
+                flex gap-4 overflow-x-auto pb-4
+                snap-x snap-mandatory
+                scrollbar-hide
+                -mx-6 px-6
+              "
+              style={{ scrollBehavior: "smooth" }}
+            >
+              {produitsVedette.map((p) => (
+                <div key={p.id} className="shrink-0 snap-start w-[45%] sm:w-[30%] md:w-[23%] lg:w-[18%]">
+                  <ProductItem product={p} />
+                </div>
+              ))}
+            </div>
+          )}
+        </section>
+
         {/* ================= POURQUOI NOUS CHOISIR ================= */}
         <section className="py-14 md:py-20">
           <div className="text-center mb-10">
@@ -446,7 +400,7 @@ export default function HomePage() {
               modules={[Autoplay]}
               spaceBetween={30}
               slidesPerView={3}
-              loop
+              loop={marques.length > 6}
               autoplay={{ delay: 2000, disableOnInteraction: false }}
               breakpoints={{
                 640: { slidesPerView: 4 },

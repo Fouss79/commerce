@@ -7,6 +7,7 @@ import { Navigation, Pagination, Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
+import Carousel from "../Component/Carousel";
 import {
   ShieldCheck,
   Truck,
@@ -62,58 +63,7 @@ export default function HomePage() {
     <div className="pt-36 lg:pt-24 bg-white">
 
       {/* ================= HERO ================= */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-[#063c28] via-[#0a5a3d] to-[#0d734b]">
-        <div className="absolute -right-20 -top-20 w-96 h-96 rounded-full bg-white/5" />
-        <div className="absolute -left-20 -bottom-20 w-72 h-72 rounded-full bg-white/5" />
-        <div className="absolute top-1/2 left-1/3 w-40 h-40 rounded-full bg-yellow-400/10 blur-2xl" />
-
-        <div className="relative max-w-7xl mx-auto px-6 py-16 md:py-24 grid md:grid-cols-2 gap-10 items-center">
-          <div className="text-center md:text-left space-y-6">
-            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 text-yellow-400 text-sm font-semibold">
-              <Sparkles size={16} />
-              La marketplace 100% malienne
-            </span>
-
-            <h1 className="text-3xl md:text-5xl font-extrabold text-white leading-tight">
-              Achetez local,{" "}
-              <span className="text-yellow-400">soutenez</span> nos
-              vendeurs maliens
-            </h1>
-
-            <p className="text-green-100 text-base md:text-lg max-w-lg mx-auto md:mx-0">
-              Des milliers de produits, des vendeurs vérifiés, une
-              livraison rapide partout au Mali. Découvrez MaliSugu.
-            </p>
-
-            <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
-              <Link
-                href="/produits"
-                className="flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl bg-yellow-400 text-[#063c28] font-bold hover:bg-yellow-300 transition shadow-lg"
-              >
-                Explorer les produits
-                <ArrowRight size={18} />
-              </Link>
-              <Link
-                href="/vendeurs"
-                className="flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl bg-white/10 text-white font-semibold border border-white/20 hover:bg-white/20 transition"
-              >
-                Voir les boutiques
-              </Link>
-            </div>
-          </div>
-
-          <div className="relative hidden md:block">
-            <div className="aspect-square rounded-[2.5rem] bg-white/10 backdrop-blur-md border border-white/10 shadow-2xl flex items-center justify-center overflow-hidden">
-              <img
-                src="/hero-illustration.png"
-                alt="MaliSugu"
-                className="w-full h-full object-contain p-8"
-                onError={(e) => (e.currentTarget.style.display = "none")}
-              />
-            </div>
-          </div>
-        </div>
-      </section>
+      <Carousel />
 
       {/* ================= CATÉGORIES POPULAIRES — fond crème/jaune doux ================= */}
       <section className="bg-gradient-to-b from-amber-50 to-white py-14 md:py-20">

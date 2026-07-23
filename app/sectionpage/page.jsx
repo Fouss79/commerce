@@ -59,7 +59,7 @@ export default function HomePage() {
   const produitsVedette = produits.slice(0, 12);
 
   return (
-    <div className="pt-36 lg:pt-24">
+    <div className="pt-36 lg:pt-24 bg-white">
 
       {/* ================= HERO ================= */}
       <section className="relative overflow-hidden bg-gradient-to-br from-[#063c28] via-[#0a5a3d] to-[#0d734b]">
@@ -115,10 +115,9 @@ export default function HomePage() {
         </div>
       </section>
 
-      <div className="max-w-7xl mx-auto px-6">
-
-        {/* ================= CATÉGORIES POPULAIRES (auto-scroll comme les marques) ================= */}
-        <section className="py-14 md:py-20">
+      {/* ================= CATÉGORIES POPULAIRES — fond crème/jaune doux ================= */}
+      <section className="bg-gradient-to-b from-amber-50 to-white py-14 md:py-20">
+        <div className="max-w-7xl mx-auto px-6">
           <div className="flex items-center justify-between mb-8">
             <div>
               <p className="text-yellow-600 font-semibold text-sm mb-1">
@@ -140,7 +139,7 @@ export default function HomePage() {
           {loading ? (
             <div className="flex gap-4 overflow-hidden">
               {[...Array(6)].map((_, i) => (
-                <div key={i} className="h-32 w-28 md:w-32 shrink-0 bg-gray-100 rounded-3xl animate-pulse" />
+                <div key={i} className="h-32 w-28 md:w-32 shrink-0 bg-white rounded-3xl animate-pulse" />
               ))}
             </div>
           ) : categories.length === 0 ? (
@@ -165,12 +164,12 @@ export default function HomePage() {
                     href={`/categorie/${cat.id}`}
                     className="
                       group relative flex flex-col items-center justify-center gap-3
-                      p-5 rounded-3xl bg-gray-50 border border-gray-100
-                      hover:border-[#063c28]/30 hover:shadow-lg hover:-translate-y-1
+                      p-5 rounded-3xl bg-white border border-amber-100
+                      hover:border-yellow-400 hover:shadow-lg hover:-translate-y-1
                       transition-all duration-300
                     "
                   >
-                    <div className="w-14 h-14 rounded-2xl bg-[#063c28]/10 flex items-center justify-center overflow-hidden group-hover:bg-yellow-400/20 transition">
+                    <div className="w-14 h-14 rounded-2xl bg-yellow-50 flex items-center justify-center overflow-hidden group-hover:bg-yellow-400/20 transition">
                       {cat.image ? (
                         <img
                           src={cat.image}
@@ -189,14 +188,16 @@ export default function HomePage() {
               ))}
             </Swiper>
           )}
-        </section>
+        </div>
+      </section>
 
-        {/* ================= PLUS VENDUS ================= */}
-        {produitsVendus.length > 0 && (
-          <section className="py-6 md:py-10">
+      {/* ================= PLUS VENDUS — fond orange/corail chaleureux ================= */}
+      {produitsVendus.length > 0 && (
+        <section className="bg-gradient-to-b from-orange-50 to-white py-10 md:py-14">
+          <div className="max-w-7xl mx-auto px-6">
             <div className="flex items-center justify-between mb-8">
               <div>
-                <p className="text-yellow-600 font-semibold text-sm mb-1 flex items-center gap-2">
+                <p className="text-orange-600 font-semibold text-sm mb-1 flex items-center gap-2">
                   <Flame size={16} />
                   Tendance
                 </p>
@@ -207,7 +208,7 @@ export default function HomePage() {
 
               <Link
                 href="/produits?tri=populaire"
-                className="hidden md:flex items-center gap-1 text-sm font-semibold text-[#063c28] hover:text-yellow-600 transition"
+                className="hidden md:flex items-center gap-1 text-sm font-semibold text-[#063c28] hover:text-orange-600 transition"
               >
                 Tout voir <ArrowRight size={16} />
               </Link>
@@ -227,7 +228,7 @@ export default function HomePage() {
                   key={p.id}
                   className="shrink-0 snap-start w-[45%] sm:w-[30%] md:w-[23%] lg:w-[18%] relative"
                 >
-                  <span className="absolute top-3 left-3 z-10 flex items-center gap-1 px-3 py-1 rounded-full bg-yellow-400 text-[#063c28] text-xs font-bold shadow">
+                  <span className="absolute top-3 left-3 z-10 flex items-center gap-1 px-3 py-1 rounded-full bg-orange-500 text-white text-xs font-bold shadow">
                     <Flame size={12} />
                     Best-seller
                   </span>
@@ -235,15 +236,17 @@ export default function HomePage() {
                 </div>
               ))}
             </div>
-          </section>
-        )}
+          </div>
+        </section>
+      )}
 
-        {/* ================= PLUS RÉCENTS ================= */}
-        {produitsRecents.length > 0 && (
-          <section className="py-6 md:py-10">
+      {/* ================= PLUS RÉCENTS — fond bleu/violet frais ================= */}
+      {produitsRecents.length > 0 && (
+        <section className="bg-gradient-to-b from-indigo-50 to-white py-10 md:py-14">
+          <div className="max-w-7xl mx-auto px-6">
             <div className="flex items-center justify-between mb-8">
               <div>
-                <p className="text-yellow-600 font-semibold text-sm mb-1 flex items-center gap-2">
+                <p className="text-indigo-600 font-semibold text-sm mb-1 flex items-center gap-2">
                   <Clock size={16} />
                   Fraîchement arrivés
                 </p>
@@ -254,7 +257,7 @@ export default function HomePage() {
 
               <Link
                 href="/produits?tri=recent"
-                className="hidden md:flex items-center gap-1 text-sm font-semibold text-[#063c28] hover:text-yellow-600 transition"
+                className="hidden md:flex items-center gap-1 text-sm font-semibold text-[#063c28] hover:text-indigo-600 transition"
               >
                 Tout voir <ArrowRight size={16} />
               </Link>
@@ -274,21 +277,23 @@ export default function HomePage() {
                   key={p.id}
                   className="shrink-0 snap-start w-[45%] sm:w-[30%] md:w-[23%] lg:w-[18%] relative"
                 >
-                  <span className="absolute top-3 left-3 z-10 px-3 py-1 rounded-full bg-[#063c28] text-white text-xs font-bold shadow">
+                  <span className="absolute top-3 left-3 z-10 px-3 py-1 rounded-full bg-indigo-600 text-white text-xs font-bold shadow">
                     Nouveau
                   </span>
                   <ProductItem product={p} />
                 </div>
               ))}
             </div>
-          </section>
-        )}
+          </div>
+        </section>
+      )}
 
-        {/* ================= PRODUITS EN VEDETTE ================= */}
-        <section className="py-6 md:py-10">
+      {/* ================= PRODUITS EN VEDETTE — fond vert clair (identité marque) ================= */}
+      <section className="bg-gradient-to-b from-emerald-50 to-white py-10 md:py-14">
+        <div className="max-w-7xl mx-auto px-6">
           <div className="flex items-center justify-between mb-8">
             <div>
-              <p className="text-yellow-600 font-semibold text-sm mb-1">
+              <p className="text-emerald-700 font-semibold text-sm mb-1">
                 Sélection du moment
               </p>
               <h2 className="text-2xl md:text-3xl font-extrabold text-[#063c28]">
@@ -298,7 +303,7 @@ export default function HomePage() {
 
             <Link
               href="/produits"
-              className="hidden md:flex items-center gap-1 text-sm font-semibold text-[#063c28] hover:text-yellow-600 transition"
+              className="hidden md:flex items-center gap-1 text-sm font-semibold text-[#063c28] hover:text-emerald-700 transition"
             >
               Tout voir <ArrowRight size={16} />
             </Link>
@@ -307,7 +312,7 @@ export default function HomePage() {
           {loading ? (
             <div className="flex gap-4 overflow-hidden">
               {[...Array(6)].map((_, i) => (
-                <div key={i} className="h-64 w-[45%] sm:w-[30%] md:w-[23%] shrink-0 bg-gray-100 rounded-2xl animate-pulse" />
+                <div key={i} className="h-64 w-[45%] sm:w-[30%] md:w-[23%] shrink-0 bg-white rounded-2xl animate-pulse" />
               ))}
             </div>
           ) : produitsVedette.length === 0 ? (
@@ -329,15 +334,20 @@ export default function HomePage() {
               ))}
             </div>
           )}
-        </section>
+        </div>
+      </section>
 
-        {/* ================= POURQUOI NOUS CHOISIR ================= */}
-        <section className="py-14 md:py-20">
+      {/* ================= POURQUOI NOUS CHOISIR — fond sombre (identité marque forte) ================= */}
+      <section className="relative overflow-hidden bg-gradient-to-br from-[#063c28] via-[#0a5a3d] to-[#0d734b] py-14 md:py-20">
+        <div className="absolute -right-16 -top-16 w-72 h-72 rounded-full bg-white/5" />
+        <div className="absolute -left-16 -bottom-16 w-56 h-56 rounded-full bg-white/5" />
+
+        <div className="relative max-w-7xl mx-auto px-6">
           <div className="text-center mb-10">
-            <p className="text-yellow-600 font-semibold text-sm mb-1">
+            <p className="text-yellow-400 font-semibold text-sm mb-1">
               Nos engagements
             </p>
-            <h2 className="text-2xl md:text-3xl font-extrabold text-[#063c28]">
+            <h2 className="text-2xl md:text-3xl font-extrabold text-white">
               Pourquoi choisir MaliSugu
             </h2>
           </div>
@@ -369,26 +379,28 @@ export default function HomePage() {
                 key={i}
                 className="
                   flex flex-col items-center text-center gap-3
-                  p-6 rounded-3xl bg-white border border-gray-100
-                  shadow-sm hover:shadow-lg hover:-translate-y-1
+                  p-6 rounded-3xl bg-white/10 backdrop-blur-sm border border-white/10
+                  hover:bg-white/15 hover:-translate-y-1
                   transition-all duration-300
                 "
               >
-                <div className="w-14 h-14 rounded-2xl bg-[#063c28] text-yellow-400 flex items-center justify-center">
+                <div className="w-14 h-14 rounded-2xl bg-yellow-400 text-[#063c28] flex items-center justify-center">
                   {item.icon}
                 </div>
-                <p className="font-bold text-gray-800">{item.title}</p>
-                <p className="text-sm text-gray-500">{item.desc}</p>
+                <p className="font-bold text-white">{item.title}</p>
+                <p className="text-sm text-green-100">{item.desc}</p>
               </div>
             ))}
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* ================= MARQUES PARTENAIRES ================= */}
-        {marques.length > 0 && (
-          <section className="py-14 md:py-20">
+      {/* ================= MARQUES PARTENAIRES — fond gris neutre épuré ================= */}
+      {marques.length > 0 && (
+        <section className="bg-gray-50 py-14 md:py-20">
+          <div className="max-w-7xl mx-auto px-6">
             <div className="text-center mb-10">
-              <p className="text-yellow-600 font-semibold text-sm mb-1">
+              <p className="text-gray-500 font-semibold text-sm mb-1">
                 Ils nous font confiance
               </p>
               <h2 className="text-2xl md:text-3xl font-extrabold text-[#063c28]">
@@ -409,7 +421,7 @@ export default function HomePage() {
             >
               {marques.map((m) => (
                 <SwiperSlide key={m.id}>
-                  <div className="flex items-center justify-center h-20 grayscale hover:grayscale-0 transition-all duration-300 opacity-70 hover:opacity-100">
+                  <div className="flex items-center justify-center h-20 bg-white rounded-2xl shadow-sm grayscale hover:grayscale-0 transition-all duration-300 opacity-70 hover:opacity-100">
                     {m.image ? (
                       <img
                         src={m.image}
@@ -423,11 +435,13 @@ export default function HomePage() {
                 </SwiperSlide>
               ))}
             </Swiper>
-          </section>
-        )}
+          </div>
+        </section>
+      )}
 
-        {/* ================= NEWSLETTER / CTA ================= */}
-        <section className="pb-20">
+      {/* ================= NEWSLETTER / CTA — fond vert marque, section finale ================= */}
+      <section className="py-16 md:py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-6">
           <div
             className="
               relative overflow-hidden rounded-3xl
@@ -464,8 +478,8 @@ export default function HomePage() {
               </form>
             </div>
           </div>
-        </section>
-      </div>
+        </div>
+      </section>
     </div>
   );
 }

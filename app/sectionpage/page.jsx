@@ -31,6 +31,28 @@ export default function HomePage() {
   const [produitsRecents, setProduitsRecents] = useState([]);
   const [loading, setLoading] = useState(true);
 
+const styles = `
+  .ml-marquee-wrap{
+    background:#3B1F3D; color:#F1E7D4;
+    overflow:hidden; white-space:nowrap;
+    border-bottom:1px solid rgba(241,231,212,0.15);
+    position:relative; z-index:50;
+  }
+  .ml-marquee{ display:inline-flex; animation: ml-scroll 26s linear infinite; }
+  .ml-marquee span{
+    padding:9px 2.2rem; font-family:'JetBrains Mono', monospace; font-size:0.72rem;
+    letter-spacing:0.14em; text-transform:uppercase; display:inline-flex; align-items:center; gap:0.6rem;
+  }
+  .ml-marquee span::after{content:"◆"; color:#D4F53E; font-size:0.6rem; margin-left:0.6rem;}
+  @keyframes ml-scroll{ from{transform:translateX(0);} to{transform:translateX(-50%);} }
+`;
+
+
+
+
+
+
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -64,6 +86,23 @@ export default function HomePage() {
 
       {/* ================= HERO ================= */}
       <Carousel />
+       <style>{styles}</style>
+      <div className="ml-marquee-wrap">
+        <div className="ml-marquee">
+          {Array.from({ length: 2 }).map((_, i) => (
+            <span key={i}>
+              SOLDES D'ÉTÉ — JUSQU'À -50%
+              <span> </span>
+              LIVRAISON OFFERTE DÈS 90€
+              <span> </span>
+              NOUVELLE COLLECTION
+              <span> </span>
+              RETOURS GRATUITS SOUS 30 JOURS
+            </span>
+          ))}
+        </div>
+      </div>
+
 
       {/* ================= CATÉGORIES POPULAIRES — fond crème/jaune doux ================= */}
       <section className="bg-gradient-to-b from-amber-50 to-white py-14 md:py-20">

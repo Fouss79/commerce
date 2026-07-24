@@ -73,7 +73,7 @@ export default function HomePage() {
     .ml-scroll-row::-webkit-scrollbar{display:none;}
     .ml-scroll-row > *{ scroll-snap-align:start; flex-shrink:0; }
 
-    .ml-prod-card{ background:var(--sand); border-radius:6px; overflow:hidden; transition:transform 0.3s ease; width:260px; }
+    .ml-prod-card{ background:#ffffff; border-radius:6px; overflow:hidden; transition:transform 0.3s ease; width:260px; }
     .ml-prod-card:hover{transform:translateY(-5px);}
     .ml-prod-thumb{ aspect-ratio:1; position:relative; overflow:hidden; background:#e8ddc9; }
     .ml-prod-thumb img{ width:100%; height:100%; object-fit:cover; }
@@ -239,7 +239,7 @@ export default function HomePage() {
     </section>
 
      {/* ================= PROMO TILES ================= */}
-      <section className="ml-promo-section">
+      <section className="bg-gray-50 py-14 md:py-20">
         <div className="ml-promo-strip">
           <div className="ml-promo-tile">
             <ShieldCheck size={30} className="ml-icon" />

@@ -30,16 +30,18 @@ export default function HomePage() {
   const styles = `
     @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,500;0,600;0,700;1,500&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@400;500&display=swap');
 
-    .ml-root{
-      --plum:#3B1F3D;
-      --plum-deep:#241226;
-      --sand:#F1E7D4;
-      --sand-light:#F8F2E6;
-      --lime:#D4F53E;
-      --rust:#C1440E;
-      --ink:#1A1114;
-      --line: rgba(26,17,20,0.14);
-    }
+     .ml-root{
+  --plum:#3B1F3D;
+  --plum-deep:#241226;
+  --sand:#F1E7D4;
+  --sand-light:#F8F2E6;
+  --lime:#D4F53E;
+  --rust:#C1440E;
+  --ink:#1A1114;
+  --sage:#063c28;      /* 👈 nouveau : vert marque */
+  --sage-light:#0d6b47; /* 👈 nouveau : vert marque plus clair */
+  --line: rgba(26,17,20,0.14);
+}
     .ml-root *{box-sizing:border-box;}
     .ml-serif{font-family:'Fraunces', serif;}
     .ml-mono{font-family:'JetBrains Mono', monospace;}
@@ -82,7 +84,7 @@ export default function HomePage() {
     .ml-prod-info .ml-cat{ font-family:'JetBrains Mono', monospace; font-size:0.65rem; color:rgba(26,17,20,0.5); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:0.3rem; }
     .ml-prod-info h4{font-weight:600; font-size:0.98rem; margin:0 0 0.5rem; color:var(--ink); font-family:'Space Grotesk', sans-serif;}
     .ml-price-row{display:flex; align-items:baseline; gap:0.55rem;}
-    .ml-price-row .ml-now{font-family:'Fraunces', serif; font-weight:600; font-size:1.15rem; color:var(--ink);}
+    .ml-price-row .ml-now{font-family:'Fraunces', serif; font-weight:600; font-size:1.15rem; color:var(--sage);}
 
     /* ===== NOUVEAUTÉS (éditorial, accent prune) ===== */
     .ml-recents-section{ background:var(--sand); padding:4rem 0; }
@@ -90,12 +92,12 @@ export default function HomePage() {
 
     /* ===== PRODUITS EN VEDETTE (ml-prod-grid) ===== */
     .ml-products-section{ background:var(--sand-light); padding:4.5rem 0; }
-    .ml-products-section .ml-eyebrow{ color:var(--rust); }
+    .ml-products-section .ml-eyebrow{ color:var(--sage); }
     .ml-prod-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:1.5rem; }
     @media (max-width:940px){.ml-prod-grid{grid-template-columns:repeat(2,1fr);}}
 
     /* ===== TUILES PROMO ===== */
-    .ml-promo-section{ background:var(--ink); padding:4.5rem 0; }
+    .ml-promo-section{ background:var(--sand-light); padding:4.5rem 0; }
     .ml-promo-strip{ max-width:1360px; margin:0 auto; padding:0 2.5rem; display:grid; grid-template-columns:repeat(3,1fr); gap:1.4rem; }
     .ml-promo-tile{ position:relative; background:var(--plum); color:var(--sand-light); border-radius:6px; padding:2.1rem 1.8rem; min-height:230px; display:flex; flex-direction:column; justify-content:flex-end; overflow:hidden; transition:transform 0.35s ease; }
     .ml-promo-tile:hover{transform:translateY(-6px);}
@@ -118,6 +120,7 @@ export default function HomePage() {
     .ml-nl-form input::placeholder{color:rgba(248,242,230,0.45);}
     .ml-nl-form button{ font-family:'JetBrains Mono', monospace; font-size:0.75rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--lime); white-space:nowrap; display:flex; align-items:center; gap:0.4rem; border:none; background:none; cursor:pointer; }
     @media (max-width:860px){.ml-nl-inner{grid-template-columns:1fr;}}
+   
   `;
 
   useEffect(() => {
@@ -153,7 +156,7 @@ export default function HomePage() {
       <style>{styles}</style>
 
       {/* ================= HERO (Carousel existant) ================= */}
-      <Carousel />
+    
 
       {/* ================= BANDEAU DÉFILANT ================= */}
       <div className="ml-marquee-wrap">
@@ -171,6 +174,70 @@ export default function HomePage() {
           ))}
         </div>
       </div>
+      <section className="w-full min-h-screen grid grid-cols-1 md:grid-cols-2 bg-[#f7f3ee] overflow-hidden">
+
+      {/* LEFT TEXT */}
+      <div className="flex flex-col justify-center px-6 md:px-20 py-16">
+        
+        <span className="text-xs tracking-[0.3em] uppercase text-[#c9a96e] mb-6">
+          Collection 2026 — Luxe Moderne
+        </span>
+
+        <p className="text-4xl md:text-6xl font-light leading-tight font-serif text-[#0d6b49]">
+          L’élégance <br />
+          <span className="italic text-[#c9a96e]">intemporelle</span> <br />
+          redéfinie
+        </p>
+
+        <p className="mt-6 text-[#8a7d72] max-w-md leading-relaxed">
+          Découvrez une nouvelle vision de la mode moderne, où chaque pièce est pensée
+          pour sublimer votre style avec simplicité, luxe et authenticité.
+        </p>
+
+        {/* Buttons */}
+        <div className="flex gap-4 mt-10 flex-wrap">
+          <button className="px-6 py-3 bg-[#1a1410] text-white text-sm tracking-widest uppercase hover:bg-[#c9a96e] transition">
+            Découvrir
+          </button>
+
+          <button className="px-6 py-3 border border-[#1a1410] text-[#1a1410] text-sm tracking-widest uppercase hover:bg-[#1a1410] hover:text-white transition">
+            Notre histoire
+          </button>
+        </div>
+
+        {/* small note */}
+        <p className="mt-8 text-xs text-[#8a7d72]">
+          +1000 clients satisfaits • Livraison rapide • Qualité premium
+        </p>
+      </div>
+
+      {/* RIGHT IMAGE */}
+      <div className="relative h-[400px] md:h-auto">
+        
+        <div className="absolute inset-0 bg-gradient-to-br from-[#c8b8a2] via-[#a89070] to-[#8a6f52]" />
+
+        {/* decorative blur */}
+        <div className="absolute w-80 h-80 bg-white/10 rounded-full blur-3xl top-10 right-10"></div>
+        <div className="absolute w-80 h-80 bg-[#c9a96e]/20 rounded-full blur-3xl bottom-10 left-10"></div>
+
+        {/* image */}
+        <img
+          src="/fem2.png"
+          alt="Fashion"
+          className="relative z-10 w-full h-full object-contain p-10 hover:scale-105 transition duration-700"
+        />
+
+        {/* price tag */}
+        <div className="absolute bottom-10 left-10 bg-white/80 backdrop-blur px-6 py-3 border border-[#e8dfd4]">
+          <p className="text-xs uppercase tracking-widest text-gray-500">
+            Pièce signature
+          </p>
+          <p className="text-xl font-serif text-[#c9a96e]">€ 1 290</p>
+        </div>
+      </div>
+      
+    </section>
+
 
       {/* ================= CATÉGORIES POPULAIRES — remis tel quel (Tailwind + Swiper) ================= */}
       <section className="bg-gradient-to-b from-amber-50 to-white py-14 md:py-20">
@@ -247,6 +314,7 @@ export default function HomePage() {
           )}
         </div>
       </section>
+      
 
       {/* ================= PLUS VENDUS (style éditorial ml-*) ================= */}
       {produitsVendus.length > 0 && (
@@ -367,7 +435,7 @@ export default function HomePage() {
       </section>
 
       {/* ================= PROMO TILES ================= */}
-      <section className="ml-promo-section">
+      <section className="bg-gray-50 py-14 md:py-20">
         <div className="ml-promo-strip">
           <div className="ml-promo-tile">
             <ShieldCheck size={30} className="ml-icon" />
@@ -375,12 +443,12 @@ export default function HomePage() {
             <h3>Paiement 100% sécurisé</h3>
             <p className="ml-off">Orange Money, Wave, carte bancaire</p>
           </div>
-          <div className="ml-promo-tile t2">
-            <Truck size={30} className="ml-icon" />
-            <span className="ml-tag">Livraison</span>
-            <h3>Rapide, partout au Mali</h3>
-            <p className="ml-off">Suivi en temps réel</p>
-          </div>
+         <div className="ml-promo-tile t2">
+  <Truck size={30} className="ml-icon" style={{ color: "var(--lime)" }} />
+  <span className="ml-tag">Livraison</span>
+  <h3>Rapide, partout au Mali</h3>
+  <p className="ml-off">Suivi en temps réel</p>
+</div>
           <div className="ml-promo-tile t3">
             <RotateCcw size={30} className="ml-icon" />
             <span className="ml-tag">Confiance</span>
@@ -424,25 +492,7 @@ export default function HomePage() {
       )}
 
       {/* ================= NEWSLETTER (éditorial) ================= */}
-      <section className="ml-newsletter">
-        <div className="ml-nl-inner">
-          <div>
-            <h2>
-              Ne manquez <em>aucune</em><br />bonne affaire
-            </h2>
-            <p>
-              Inscrivez-vous et recevez nos meilleures offres directement dans votre boîte mail.
-            </p>
-          </div>
-
-          <form className="ml-nl-form" onSubmit={(e) => e.preventDefault()}>
-            <input type="email" placeholder="Votre adresse email" />
-            <button type="submit">
-              S'inscrire <Send size={14} />
-            </button>
-          </form>
-        </div>
-      </section>
+      
     </div>
   );
 }

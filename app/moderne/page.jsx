@@ -105,8 +105,41 @@ export default function HomePage() {
     .ml-promo-tile .ml-tag{ font-family:'JetBrains Mono', monospace; font-size:0.68rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--lime); margin-bottom:0.5rem; }
     .ml-promo-tile h3{ font-family:'Fraunces', serif; font-weight:600; font-size:1.5rem; line-height:1.1; margin:0; }
     .ml-promo-tile .ml-off{ font-family:'Fraunces', serif; font-style:italic; font-size:1.05rem; margin-top:0.5rem; color:rgba(248,242,230,0.75); }
-    .ml-promo-tile.t2{background:#2C231C;}
-    .ml-promo-tile.t3{background:#241226;}
+   .ml-promo-tile{
+  position:relative;
+  color:var(--sand-light);
+  border-radius:6px;
+  padding:2.1rem 1.8rem;
+  min-height:230px;
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-end;
+  overflow:hidden;
+  transition:transform 0.35s ease;
+  background-size:cover;
+  background-position:center;
+}
+.ml-promo-tile:hover{transform:translateY(-6px);}
+
+/* Overlay sombre pour garder le texte lisible sur n'importe quelle image */
+.ml-promo-tile::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(180deg, rgba(26,17,20,0.15) 0%, rgba(26,17,20,0.75) 100%);
+  z-index:0;
+}
+
+/* Tout le contenu passe au-dessus de l'overlay */
+.ml-promo-tile > *{
+  position:relative;
+  z-index:1;
+}
+
+.ml-promo-tile .ml-icon{ position:absolute; top:1.6rem; right:1.6rem; opacity:0.9; color:var(--lime); z-index:1; }
+.ml-promo-tile .ml-tag{ font-family:'JetBrains Mono', monospace; font-size:0.68rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--lime); margin-bottom:0.5rem; }
+.ml-promo-tile h3{ font-family:'Fraunces', serif; font-weight:600; font-size:1.5rem; line-height:1.1; margin:0; }
+.ml-promo-tile .ml-off{ font-family:'Fraunces', serif; font-style:italic; font-size:1.05rem; margin-top:0.5rem; color:rgba(248,242,230,0.85); }
     @media (max-width:940px){ .ml-promo-strip{grid-template-columns:1fr;} }
 
     /* ===== NEWSLETTER ===== */
@@ -237,31 +270,41 @@ export default function HomePage() {
       </div>
       
     </section>
+    
+    {/* ================= PROMO TILES ================= */}
+<section className="bg-gray-50 py-14 md:py-20">
+  <div className="ml-promo-strip">
+    <div
+      className="ml-promo-tile"
+      style={{ backgroundImage: "url('/paiement.jpeg')" }}
+    >
+      <ShieldCheck size={30} className="ml-icon" />
+      <span className="ml-tag">Sécurité</span>
+      <h3>Paiement 100% sécurisé</h3>
+      <p className="ml-off">Orange Money, Wave, carte bancaire</p>
+    </div>
 
-     {/* ================= PROMO TILES ================= */}
-      <section className="bg-gray-50 py-14 md:py-20">
-        <div className="ml-promo-strip">
-          <div className="ml-promo-tile">
-            <ShieldCheck size={30} className="ml-icon" />
-            <span className="ml-tag">Sécurité</span>
-            <h3>Paiement 100% sécurisé</h3>
-            <p className="ml-off">Orange Money, Wave, carte bancaire</p>
-          </div>
-         <div className="ml-promo-tile t2">
-  <Truck size={30} className="ml-icon" style={{ color: "var(--lime)" }} />
-  <span className="ml-tag">Livraison</span>
-  <h3>Rapide, partout au Mali</h3>
-  <p className="ml-off">Suivi en temps réel</p>
-</div>
-          <div className="ml-promo-tile t3">
-            <RotateCcw size={30} className="ml-icon" />
-            <span className="ml-tag">Confiance</span>
-            <h3>Retours faciles</h3>
-            <p className="ml-off">Remboursement sous 7 jours</p>
-          </div>
-        </div>
-      </section>
+    <div
+      className="ml-promo-tile t2"
+      style={{ backgroundImage: "url('/livraison.jpeg')" }}
+    >
+      <Truck size={30} className="ml-icon" style={{ color: "var(--lime)" }} />
+      <span className="ml-tag">Livraison</span>
+      <h3>Rapide, partout au Mali</h3>
+      <p className="ml-off">Suivi en temps réel</p>
+    </div>
 
+    <div
+      className="ml-promo-tile t3"
+      style={{ backgroundImage: "url('/immo.jpeg')" }}
+    >
+      <RotateCcw size={30} className="ml-icon" />
+      <span className="ml-tag">Confiance</span>
+      <h3>Retours faciles</h3>
+      <p className="ml-off">Remboursement sous 7 jours</p>
+    </div>
+  </div>
+</section>
       {/* ================= CATÉGORIES POPULAIRES — remis tel quel (Tailwind + Swiper) ================= */}
       <section className="bg-gradient-to-b from-amber-50 to-white py-14 md:py-20">
         <div className="max-w-7xl mx-auto px-6">

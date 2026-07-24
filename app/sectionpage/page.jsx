@@ -3,17 +3,21 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay } from "swiper/modules";
+import { Navigation, Pagination, Autoplay } from "swiper/modules";
 import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
 import Carousel from "../Component/Carousel";
 import {
+  ShieldCheck,
+  Truck,
+  RotateCcw,
+  Headphones,
   ArrowRight,
   Send,
+  Sparkles,
   Flame,
   Clock,
-  Truck,
-  ShieldCheck,
-  RotateCcw,
 } from "lucide-react";
 
 import api from "../../lib/api";
@@ -26,102 +30,6 @@ export default function HomePage() {
   const [produitsVendus, setProduitsVendus] = useState([]);
   const [produitsRecents, setProduitsRecents] = useState([]);
   const [loading, setLoading] = useState(true);
-
-  const styles = `
-    @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,500;0,600;0,700;1,500&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@400;500&display=swap');
-
-     .ml-root{
-  --plum:#3B1F3D;
-  --plum-deep:#241226;
-  --sand:#F1E7D4;
-  --sand-light:#F8F2E6;
-  --lime:#D4F53E;
-  --rust:#C1440E;
-  --ink:#1A1114;
-  --sage:#063c28;      /* 👈 nouveau : vert marque */
-  --sage-light:#0d6b47; /* 👈 nouveau : vert marque plus clair */
-  --line: rgba(26,17,20,0.14);
-}
-    .ml-root *{box-sizing:border-box;}
-    .ml-serif{font-family:'Fraunces', serif;}
-    .ml-mono{font-family:'JetBrains Mono', monospace;}
-
-    .ml-marquee-wrap{
-      background:var(--plum); color:var(--sand);
-      overflow:hidden; white-space:nowrap;
-      border-bottom:1px solid rgba(241,231,212,0.15);
-      position:relative; z-index:40;
-    }
-    .ml-marquee{ display:inline-flex; animation: ml-scroll 26s linear infinite; }
-    .ml-marquee span{
-      padding:9px 2.2rem; font-family:'JetBrains Mono', monospace; font-size:0.72rem;
-      letter-spacing:0.14em; text-transform:uppercase; display:inline-flex; align-items:center; gap:0.6rem;
-    }
-    .ml-marquee span::after{content:"◆"; color:var(--lime); font-size:0.6rem; margin-left:0.6rem;}
-    @keyframes ml-scroll{ from{transform:translateX(0);} to{transform:translateX(-50%);} }
-
-    .ml-section{max-width:1360px; margin:0 auto; padding:0 2.5rem;}
-    .ml-section-head{ display:flex; align-items:flex-end; justify-content:space-between; margin-bottom:2.4rem; flex-wrap:wrap; gap:1rem; }
-    .ml-section-head .ml-eyebrow{ font-family:'JetBrains Mono', monospace; font-size:0.7rem; letter-spacing:0.16em; text-transform:uppercase; margin-bottom:0.6rem; display:flex; align-items:center; gap:0.4rem; }
-    .ml-section-head h2{ font-family:'Fraunces', serif; font-weight:600; font-size:2.3rem; letter-spacing:-0.01em; margin:0; color:var(--ink); }
-    .ml-section-head a{ font-family:'JetBrains Mono', monospace; font-size:0.75rem; text-transform:uppercase; letter-spacing:0.08em; color:var(--plum); display:flex; align-items:center; gap:0.4rem; }
-
-    /* ===== PLUS VENDUS (éditorial, accent rouille) ===== */
-    .ml-vendus-section{ background:var(--sand-light); padding:4rem 0; }
-    .ml-vendus-section .ml-eyebrow{ color:var(--rust); }
-    .ml-scroll-row{ display:flex; gap:1.2rem; overflow-x:auto; padding-bottom:1rem; scroll-snap-type:x mandatory; scrollbar-width:none; }
-    .ml-scroll-row::-webkit-scrollbar{display:none;}
-    .ml-scroll-row > *{ scroll-snap-align:start; flex-shrink:0; }
-
-    .ml-prod-card{ background:var(--sand); border-radius:6px; overflow:hidden; transition:transform 0.3s ease; width:260px; }
-    .ml-prod-card:hover{transform:translateY(-5px);}
-    .ml-prod-thumb{ aspect-ratio:1; position:relative; overflow:hidden; background:#e8ddc9; }
-    .ml-prod-thumb img{ width:100%; height:100%; object-fit:cover; }
-    .ml-prod-badge{ position:absolute; top:0.9rem; left:0.9rem; color:var(--sand-light); font-family:'JetBrains Mono', monospace; font-size:0.62rem; letter-spacing:0.08em; padding:0.3rem 0.55rem; border-radius:2px; text-transform:uppercase; z-index:2; display:flex; align-items:center; gap:0.3rem; }
-    .ml-prod-badge.rust{ background:var(--rust); }
-    .ml-prod-badge.plum{ background:var(--plum); }
-    .ml-prod-info{padding:1.1rem 1.2rem 1.4rem;}
-    .ml-prod-info .ml-cat{ font-family:'JetBrains Mono', monospace; font-size:0.65rem; color:rgba(26,17,20,0.5); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:0.3rem; }
-    .ml-prod-info h4{font-weight:600; font-size:0.98rem; margin:0 0 0.5rem; color:var(--ink); font-family:'Space Grotesk', sans-serif;}
-    .ml-price-row{display:flex; align-items:baseline; gap:0.55rem;}
-    .ml-price-row .ml-now{font-family:'Fraunces', serif; font-weight:600; font-size:1.15rem; color:var(--sage);}
-
-    /* ===== NOUVEAUTÉS (éditorial, accent prune) ===== */
-    .ml-recents-section{ background:var(--sand); padding:4rem 0; }
-    .ml-recents-section .ml-eyebrow{ color:var(--plum); }
-
-    /* ===== PRODUITS EN VEDETTE (ml-prod-grid) ===== */
-    .ml-products-section{ background:var(--sand-light); padding:4.5rem 0; }
-    .ml-products-section .ml-eyebrow{ color:var(--sage); }
-    .ml-prod-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:1.5rem; }
-    @media (max-width:940px){.ml-prod-grid{grid-template-columns:repeat(2,1fr);}}
-
-    /* ===== TUILES PROMO ===== */
-    .ml-promo-section{ background:var(--sand-light); padding:4.5rem 0; }
-    .ml-promo-strip{ max-width:1360px; margin:0 auto; padding:0 2.5rem; display:grid; grid-template-columns:repeat(3,1fr); gap:1.4rem; }
-    .ml-promo-tile{ position:relative; background:var(--plum); color:var(--sand-light); border-radius:6px; padding:2.1rem 1.8rem; min-height:230px; display:flex; flex-direction:column; justify-content:flex-end; overflow:hidden; transition:transform 0.35s ease; }
-    .ml-promo-tile:hover{transform:translateY(-6px);}
-    .ml-promo-tile .ml-icon{ position:absolute; top:1.6rem; right:1.6rem; opacity:0.85; color:var(--lime); }
-    .ml-promo-tile .ml-tag{ font-family:'JetBrains Mono', monospace; font-size:0.68rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--lime); margin-bottom:0.5rem; }
-    .ml-promo-tile h3{ font-family:'Fraunces', serif; font-weight:600; font-size:1.5rem; line-height:1.1; margin:0; }
-    .ml-promo-tile .ml-off{ font-family:'Fraunces', serif; font-style:italic; font-size:1.05rem; margin-top:0.5rem; color:rgba(248,242,230,0.75); }
-    .ml-promo-tile.t2{background:#2C231C;}
-    .ml-promo-tile.t3{background:#241226;}
-    @media (max-width:940px){ .ml-promo-strip{grid-template-columns:1fr;} }
-
-    /* ===== NEWSLETTER ===== */
-    .ml-newsletter{ background:var(--plum); color:var(--sand-light); }
-    .ml-nl-inner{ max-width:1360px; margin:0 auto; padding:5rem 2.5rem; display:grid; grid-template-columns:1.2fr 1fr; gap:3rem; align-items:center; }
-    .ml-newsletter h2{ font-family:'Fraunces', serif; font-weight:600; font-size:2.6rem; line-height:1.05; letter-spacing:-0.01em; margin:0; }
-    .ml-newsletter h2 em{font-style:italic; color:var(--lime);}
-    .ml-newsletter p{margin-top:1.1rem; color:rgba(248,242,230,0.7); max-width:36ch;}
-    .ml-nl-form{ display:flex; gap:0; border-bottom:1.5px solid rgba(248,242,230,0.35); padding-bottom:0.8rem; }
-    .ml-nl-form input{ background:none; border:none; outline:none; color:var(--sand-light); font-family:'Space Grotesk', sans-serif; font-size:1rem; flex:1; }
-    .ml-nl-form input::placeholder{color:rgba(248,242,230,0.45);}
-    .ml-nl-form button{ font-family:'JetBrains Mono', monospace; font-size:0.75rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--lime); white-space:nowrap; display:flex; align-items:center; gap:0.4rem; border:none; background:none; cursor:pointer; }
-    @media (max-width:860px){.ml-nl-inner{grid-template-columns:1fr;}}
-   
-  `;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -149,97 +57,15 @@ export default function HomePage() {
     fetchData();
   }, []);
 
-  const produitsVedette = produits.slice(0, 8);
+  const produitsVedette = produits.slice(0, 12);
 
   return (
-    <div className="ml-root pt-36 lg:pt-24 bg-white">
-      <style>{styles}</style>
+    <div className="pt-36 lg:pt-24 bg-white">
 
-      {/* ================= HERO (Carousel existant) ================= */}
-    
+      {/* ================= HERO ================= */}
+      <Carousel />
 
-      {/* ================= BANDEAU DÉFILANT ================= */}
-      <div className="ml-marquee-wrap">
-        <div className="ml-marquee">
-          {Array.from({ length: 2 }).map((_, i) => (
-            <span key={i}>
-              SOLDES D'ÉTÉ — JUSQU'À -50%
-              <span> </span>
-              LIVRAISON OFFERTE DÈS 90€
-              <span> </span>
-              NOUVELLE COLLECTION
-              <span> </span>
-              RETOURS GRATUITS SOUS 30 JOURS
-            </span>
-          ))}
-        </div>
-      </div>
-      <section className="w-full min-h-screen grid grid-cols-1 md:grid-cols-2 bg-[#f7f3ee] overflow-hidden">
-
-      {/* LEFT TEXT */}
-      <div className="flex flex-col justify-center px-6 md:px-20 py-16">
-        
-        <span className="text-xs tracking-[0.3em] uppercase text-[#c9a96e] mb-6">
-          Collection 2026 — Luxe Moderne
-        </span>
-
-        <p className="text-4xl md:text-6xl font-light leading-tight font-serif text-[#0d6b49]">
-          L’élégance <br />
-          <span className="italic text-[#c9a96e]">intemporelle</span> <br />
-          redéfinie
-        </p>
-
-        <p className="mt-6 text-[#8a7d72] max-w-md leading-relaxed">
-          Découvrez une nouvelle vision de la mode moderne, où chaque pièce est pensée
-          pour sublimer votre style avec simplicité, luxe et authenticité.
-        </p>
-
-        {/* Buttons */}
-        <div className="flex gap-4 mt-10 flex-wrap">
-          <button className="px-6 py-3 bg-[#1a1410] text-white text-sm tracking-widest uppercase hover:bg-[#c9a96e] transition">
-            Découvrir
-          </button>
-
-          <button className="px-6 py-3 border border-[#1a1410] text-[#1a1410] text-sm tracking-widest uppercase hover:bg-[#1a1410] hover:text-white transition">
-            Notre histoire
-          </button>
-        </div>
-
-        {/* small note */}
-        <p className="mt-8 text-xs text-[#8a7d72]">
-          +1000 clients satisfaits • Livraison rapide • Qualité premium
-        </p>
-      </div>
-
-      {/* RIGHT IMAGE */}
-      <div className="relative h-[400px] md:h-auto">
-        
-        <div className="absolute inset-0 bg-gradient-to-br from-[#c8b8a2] via-[#a89070] to-[#8a6f52]" />
-
-        {/* decorative blur */}
-        <div className="absolute w-80 h-80 bg-white/10 rounded-full blur-3xl top-10 right-10"></div>
-        <div className="absolute w-80 h-80 bg-[#c9a96e]/20 rounded-full blur-3xl bottom-10 left-10"></div>
-
-        {/* image */}
-        <img
-          src="/fem2.png"
-          alt="Fashion"
-          className="relative z-10 w-full h-full object-contain p-10 hover:scale-105 transition duration-700"
-        />
-
-        {/* price tag */}
-        <div className="absolute bottom-10 left-10 bg-white/80 backdrop-blur px-6 py-3 border border-[#e8dfd4]">
-          <p className="text-xs uppercase tracking-widest text-gray-500">
-            Pièce signature
-          </p>
-          <p className="text-xl font-serif text-[#c9a96e]">€ 1 290</p>
-        </div>
-      </div>
-      
-    </section>
-
-
-      {/* ================= CATÉGORIES POPULAIRES — remis tel quel (Tailwind + Swiper) ================= */}
+      {/* ================= CATÉGORIES POPULAIRES — fond crème/jaune doux ================= */}
       <section className="bg-gradient-to-b from-amber-50 to-white py-14 md:py-20">
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex items-center justify-between mb-8">
@@ -314,157 +140,222 @@ export default function HomePage() {
           )}
         </div>
       </section>
-      
 
-      {/* ================= PLUS VENDUS (style éditorial ml-*) ================= */}
+      {/* ================= PLUS VENDUS — fond orange/corail chaleureux ================= */}
       {produitsVendus.length > 0 && (
-        <section className="ml-vendus-section">
-          <div className="ml-section">
-            <div className="ml-section-head">
+        <section className="bg-gradient-to-b from-orange-50 to-white py-10 md:py-14">
+          <div className="max-w-7xl mx-auto px-6">
+            <div className="flex items-center justify-between mb-8">
               <div>
-                <span className="ml-eyebrow">
-                  <Flame size={13} /> Tendance
-                </span>
-                <h2>Les plus vendus</h2>
+                <p className="text-orange-600 font-semibold text-sm mb-1 flex items-center gap-2">
+                  <Flame size={16} />
+                  Tendance
+                </p>
+                <h2 className="text-2xl md:text-3xl font-extrabold text-[#063c28]">
+                  Les plus vendus
+                </h2>
               </div>
-              <Link href="/produits?tri=populaire">
-                Tout voir <ArrowRight size={14} />
+
+              <Link
+                href="/produits?tri=populaire"
+                className="hidden md:flex items-center gap-1 text-sm font-semibold text-[#063c28] hover:text-orange-600 transition"
+              >
+                Tout voir <ArrowRight size={16} />
               </Link>
             </div>
 
-            <div className="ml-scroll-row">
+            <div
+              className="
+                flex gap-4 overflow-x-auto pb-4
+                snap-x snap-mandatory
+                scrollbar-hide
+                -mx-6 px-6
+              "
+              style={{ scrollBehavior: "smooth" }}
+            >
               {produitsVendus.map((p) => (
-                <Link key={p.id} href={`/produit/${p.id}`} className="ml-prod-card">
-                  <div className="ml-prod-thumb">
-                    <span className="ml-prod-badge rust">
-                      <Flame size={11} /> Best
-                    </span>
-                    {p.image && <img src={p.image} alt={p.nom} />}
-                  </div>
-                  <div className="ml-prod-info">
-                    <div className="ml-cat">{p.marqueNom || p.sousCategorieNom || "Boutique"}</div>
-                    <h4>{p.nom}</h4>
-                    <div className="ml-price-row">
-                      <span className="ml-now">{p.prix?.toLocaleString()} FCFA</span>
-                    </div>
-                  </div>
-                </Link>
+                <div
+                  key={p.id}
+                  className="shrink-0 snap-start w-[45%] sm:w-[30%] md:w-[23%] lg:w-[18%] relative"
+                >
+                  <span className="absolute top-3 left-3 z-10 flex items-center gap-1 px-3 py-1 rounded-full bg-orange-500 text-white text-xs font-bold shadow">
+                    <Flame size={12} />
+                    Best-seller
+                  </span>
+                  <ProductItem product={p} />
+                </div>
               ))}
             </div>
           </div>
         </section>
       )}
 
-      {/* ================= NOUVEAUTÉS (style éditorial ml-*) ================= */}
+      {/* ================= PLUS RÉCENTS — fond bleu/violet frais ================= */}
       {produitsRecents.length > 0 && (
-        <section className="ml-recents-section">
-          <div className="ml-section">
-            <div className="ml-section-head">
+        <section className="bg-gradient-to-b from-indigo-50 to-white py-10 md:py-14">
+          <div className="max-w-7xl mx-auto px-6">
+            <div className="flex items-center justify-between mb-8">
               <div>
-                <span className="ml-eyebrow">
-                  <Clock size={13} /> Fraîchement arrivés
-                </span>
-                <h2>Nouveautés</h2>
+                <p className="text-indigo-600 font-semibold text-sm mb-1 flex items-center gap-2">
+                  <Clock size={16} />
+                  Fraîchement arrivés
+                </p>
+                <h2 className="text-2xl md:text-3xl font-extrabold text-[#063c28]">
+                  Nouveautés
+                </h2>
               </div>
-              <Link href="/produits?tri=recent">
-                Tout voir <ArrowRight size={14} />
+
+              <Link
+                href="/produits?tri=recent"
+                className="hidden md:flex items-center gap-1 text-sm font-semibold text-[#063c28] hover:text-indigo-600 transition"
+              >
+                Tout voir <ArrowRight size={16} />
               </Link>
             </div>
 
-            <div className="ml-scroll-row">
+            <div
+              className="
+                flex gap-4 overflow-x-auto pb-4
+                snap-x snap-mandatory
+                scrollbar-hide
+                -mx-6 px-6
+              "
+              style={{ scrollBehavior: "smooth" }}
+            >
               {produitsRecents.map((p) => (
-                <Link key={p.id} href={`/produit/${p.id}`} className="ml-prod-card">
-                  <div className="ml-prod-thumb">
-                    <span className="ml-prod-badge plum">Nouveau</span>
-                    {p.image && <img src={p.image} alt={p.nom} />}
-                  </div>
-                  <div className="ml-prod-info">
-                    <div className="ml-cat">{p.marqueNom || p.sousCategorieNom || "Boutique"}</div>
-                    <h4>{p.nom}</h4>
-                    <div className="ml-price-row">
-                      <span className="ml-now">{p.prix?.toLocaleString()} FCFA</span>
-                    </div>
-                  </div>
-                </Link>
+                <div
+                  key={p.id}
+                  className="shrink-0 snap-start w-[45%] sm:w-[30%] md:w-[23%] lg:w-[18%] relative"
+                >
+                  <span className="absolute top-3 left-3 z-10 px-3 py-1 rounded-full bg-indigo-600 text-white text-xs font-bold shadow">
+                    Nouveau
+                  </span>
+                  <ProductItem product={p} />
+                </div>
               ))}
             </div>
           </div>
         </section>
       )}
 
-      {/* ================= PRODUITS EN VEDETTE (ml-prod-grid) ================= */}
-      <section className="ml-products-section">
-        <div className="ml-section">
-          <div className="ml-section-head">
+      {/* ================= PRODUITS EN VEDETTE — fond vert clair (identité marque) ================= */}
+      <section className="bg-gradient-to-b from-emerald-50 to-white py-10 md:py-14">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="flex items-center justify-between mb-8">
             <div>
-              <span className="ml-eyebrow">Sélection</span>
-              <h2>Produits en vedette</h2>
+              <p className="text-emerald-700 font-semibold text-sm mb-1">
+                Sélection du moment
+              </p>
+              <h2 className="text-2xl md:text-3xl font-extrabold text-[#063c28]">
+                Produits en vedette
+              </h2>
             </div>
-            <Link href="/produits">
-              Tout voir <ArrowRight size={14} />
+
+            <Link
+              href="/produits"
+              className="hidden md:flex items-center gap-1 text-sm font-semibold text-[#063c28] hover:text-emerald-700 transition"
+            >
+              Tout voir <ArrowRight size={16} />
             </Link>
           </div>
 
           {loading ? (
-            <div className="ml-prod-grid">
-              {[...Array(4)].map((_, i) => (
-                <div key={i} className="bg-gray-100 animate-pulse rounded-md aspect-square" />
+            <div className="flex gap-4 overflow-hidden">
+              {[...Array(6)].map((_, i) => (
+                <div key={i} className="h-64 w-[45%] sm:w-[30%] md:w-[23%] shrink-0 bg-white rounded-2xl animate-pulse" />
               ))}
             </div>
           ) : produitsVedette.length === 0 ? (
             <p className="text-gray-400 text-sm">Aucun produit disponible pour le moment.</p>
           ) : (
-            <div className="ml-prod-grid">
+            <div
+              className="
+                flex gap-4 overflow-x-auto pb-4
+                snap-x snap-mandatory
+                scrollbar-hide
+                -mx-6 px-6
+              "
+              style={{ scrollBehavior: "smooth" }}
+            >
               {produitsVedette.map((p) => (
-                <Link key={p.id} href={`/produit/${p.id}`} className="ml-prod-card" style={{ width: "auto" }}>
-                  <div className="ml-prod-thumb">
-                    {p.image && <img src={p.image} alt={p.nom} />}
-                  </div>
-                  <div className="ml-prod-info">
-                    <div className="ml-cat">{p.marqueNom || p.sousCategorieNom || "Boutique"}</div>
-                    <h4>{p.nom}</h4>
-                    <div className="ml-price-row">
-                      <span className="ml-now">{p.prix?.toLocaleString()} FCFA</span>
-                    </div>
-                  </div>
-                </Link>
+                <div key={p.id} className="shrink-0 snap-start w-[45%] sm:w-[30%] md:w-[23%] lg:w-[18%]">
+                  <ProductItem product={p} />
+                </div>
               ))}
             </div>
           )}
         </div>
       </section>
 
-      {/* ================= PROMO TILES ================= */}
-      <section className="bg-gray-50 py-14 md:py-20">
-        <div className="ml-promo-strip">
-          <div className="ml-promo-tile">
-            <ShieldCheck size={30} className="ml-icon" />
-            <span className="ml-tag">Sécurité</span>
-            <h3>Paiement 100% sécurisé</h3>
-            <p className="ml-off">Orange Money, Wave, carte bancaire</p>
+      {/* ================= POURQUOI NOUS CHOISIR — fond sombre (identité marque forte) ================= */}
+      <section className="relative overflow-hidden bg-gradient-to-br from-[#063c28] via-[#0a5a3d] to-[#0d734b] py-14 md:py-20">
+        <div className="absolute -right-16 -top-16 w-72 h-72 rounded-full bg-white/5" />
+        <div className="absolute -left-16 -bottom-16 w-56 h-56 rounded-full bg-white/5" />
+
+        <div className="relative max-w-7xl mx-auto px-6">
+          <div className="text-center mb-10">
+            <p className="text-yellow-400 font-semibold text-sm mb-1">
+              Nos engagements
+            </p>
+            <h2 className="text-2xl md:text-3xl font-extrabold text-white">
+              Pourquoi choisir MaliSugu
+            </h2>
           </div>
-         <div className="ml-promo-tile t2">
-  <Truck size={30} className="ml-icon" style={{ color: "var(--lime)" }} />
-  <span className="ml-tag">Livraison</span>
-  <h3>Rapide, partout au Mali</h3>
-  <p className="ml-off">Suivi en temps réel</p>
-</div>
-          <div className="ml-promo-tile t3">
-            <RotateCcw size={30} className="ml-icon" />
-            <span className="ml-tag">Confiance</span>
-            <h3>Retours faciles</h3>
-            <p className="ml-off">Remboursement sous 7 jours</p>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
+            {[
+              {
+                icon: <ShieldCheck size={26} />,
+                title: "Paiement sécurisé",
+                desc: "Vos transactions sont protégées à 100%",
+              },
+              {
+                icon: <Truck size={26} />,
+                title: "Livraison rapide",
+                desc: "Partout au Mali, en un temps record",
+              },
+              {
+                icon: <RotateCcw size={26} />,
+                title: "Retour facile",
+                desc: "Remboursement sous 7 jours",
+              },
+              {
+                icon: <Headphones size={26} />,
+                title: "Support 7j/7",
+                desc: "Une équipe à votre écoute",
+              },
+            ].map((item, i) => (
+              <div
+                key={i}
+                className="
+                  flex flex-col items-center text-center gap-3
+                  p-6 rounded-3xl bg-white/10 backdrop-blur-sm border border-white/10
+                  hover:bg-white/15 hover:-translate-y-1
+                  transition-all duration-300
+                "
+              >
+                <div className="w-14 h-14 rounded-2xl bg-yellow-400 text-[#063c28] flex items-center justify-center">
+                  {item.icon}
+                </div>
+                <p className="font-bold text-white">{item.title}</p>
+                <p className="text-sm text-green-100">{item.desc}</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* ================= MARQUES PARTENAIRES (Tailwind) ================= */}
+      {/* ================= MARQUES PARTENAIRES — fond gris neutre épuré ================= */}
       {marques.length > 0 && (
         <section className="bg-gray-50 py-14 md:py-20">
           <div className="max-w-7xl mx-auto px-6">
             <div className="text-center mb-10">
-              <p className="text-gray-500 font-semibold text-sm mb-1">Ils nous font confiance</p>
-              <h2 className="text-2xl md:text-3xl font-extrabold text-[#063c28]">Marques partenaires</h2>
+              <p className="text-gray-500 font-semibold text-sm mb-1">
+                Ils nous font confiance
+              </p>
+              <h2 className="text-2xl md:text-3xl font-extrabold text-[#063c28]">
+                Marques partenaires
+              </h2>
             </div>
 
             <Swiper
@@ -473,13 +364,20 @@ export default function HomePage() {
               slidesPerView={3}
               loop={marques.length > 6}
               autoplay={{ delay: 2000, disableOnInteraction: false }}
-              breakpoints={{ 640: { slidesPerView: 4 }, 1024: { slidesPerView: 6 } }}
+              breakpoints={{
+                640: { slidesPerView: 4 },
+                1024: { slidesPerView: 6 },
+              }}
             >
               {marques.map((m) => (
                 <SwiperSlide key={m.id}>
                   <div className="flex items-center justify-center h-20 bg-white rounded-2xl shadow-sm grayscale hover:grayscale-0 transition-all duration-300 opacity-70 hover:opacity-100">
                     {m.image ? (
-                      <img src={m.image} alt={m.nom} className="max-h-14 object-contain" />
+                      <img
+                        src={m.image}
+                        alt={m.nom}
+                        className="max-h-14 object-contain"
+                      />
                     ) : (
                       <span className="font-bold text-gray-400">{m.nom}</span>
                     )}
@@ -491,8 +389,47 @@ export default function HomePage() {
         </section>
       )}
 
-      {/* ================= NEWSLETTER (éditorial) ================= */}
-      
+      {/* ================= NEWSLETTER / CTA — fond vert marque, section finale ================= */}
+      <section className="py-16 md:py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-6">
+          <div
+            className="
+              relative overflow-hidden rounded-3xl
+              bg-gradient-to-br from-[#063c28] via-[#0a5a3d] to-[#0d734b]
+              px-8 py-12 md:px-16 md:py-16
+              shadow-[0_20px_50px_rgba(6,60,40,0.25)]
+              text-center
+            "
+          >
+            <div className="absolute -right-16 -top-16 w-64 h-64 rounded-full bg-white/5" />
+            <div className="absolute -left-16 -bottom-16 w-48 h-48 rounded-full bg-white/5" />
+
+            <div className="relative max-w-xl mx-auto space-y-5">
+              <h2 className="text-2xl md:text-3xl font-extrabold text-white">
+                Ne manquez aucune bonne affaire
+              </h2>
+              <p className="text-green-100">
+                Inscrivez-vous et recevez nos meilleures offres directement
+                dans votre boîte mail.
+              </p>
+
+              <form className="flex flex-col sm:flex-row items-center gap-3 bg-white/10 rounded-full p-2 border border-white/10">
+                <input
+                  type="email"
+                  placeholder="Votre adresse email"
+                  className="flex-1 w-full bg-transparent px-4 py-2.5 text-white placeholder-green-200 outline-none"
+                />
+                <button
+                  type="submit"
+                  className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-2.5 bg-yellow-400 text-[#063c28] font-bold rounded-full hover:bg-yellow-300 transition"
+                >
+                  S'inscrire <Send size={16} />
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }
